@@ -66,3 +66,5 @@ aprovados. [GIF de alimentação de 6 segundos](media/sprint2.gif), renderizado
 fora da tela com legendas exclusivas da demonstração. Não houve validação
 da Sprint 2 com driver gráfico de desktop nem inspeção manual pelo usuário.
 Entrega técnica concluída, desenvolvimento interrompido e aguardando revisão.
+
+## Sprint 2: aprovada na revisão de código, com pequeno ajuste documental recomendado.
