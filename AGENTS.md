@@ -14,10 +14,11 @@ de plugins, configurações privadas ou memória exclusiva de um CLI.
 
 ## Limites vigentes
 
-- Trabalhe somente na Sprint 1, autorizada pelo usuário. Ao concluir,
-  interrompa o desenvolvimento e aguarde revisão. Não avance para a Sprint 2.
-  A entrega técnica da Sprint 1 está concluída; consulte a memória antes de
-  retomar e aguarde orientação do usuário para qualquer novo trabalho.
+- Trabalhe somente na Sprint 2, oficialmente autorizada pelo usuário.
+  A Sprint 1 está concluída, aprovada e integrada à main pelo PR #1.
+  A entrega técnica da Sprint 2 está concluída; desenvolvimento interrompido
+  para revisão do usuário. Ajustes devem responder à revisão.
+  A Sprint 3 não está autorizada; não inicie funcionalidades posteriores.
 - Preserve arquivos existentes e mudanças do usuário. Nunca altere o PRD.
 - Não faça commits, tags, pushes ou publicação sem autorização explícita.
   A Sprint 0 já foi registrada pelo usuário; novos commits continuam proibidos
@@ -58,8 +59,9 @@ o estado antes de escrever para preservar os registros de outras sessões.
 - Mantenha domínio independente do Pygame,
   tempo lógico fixo de 1/60 s e gerador aleatório próprio do mundo.
 - Crie apenas componentes necessários à sprint vigente. Creature, World e
-  Renderer pertencem à Sprint 1; comida, metabolismo, reprodução, genética,
-  métricas e controles novos aguardam suas sprints.
+  Renderer pertencem à Sprint 1; comida, busca, consumo, metabolismo, morte
+  e reposição pertencem à Sprint 2. Reprodução, genética, métricas e controles
+  novos aguardam suas sprints.
 - Valide o comportamento afetado com testes úteis e registre seus limites.
 - Documente em português; use nomes de código em inglês.
 

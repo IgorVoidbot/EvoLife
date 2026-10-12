@@ -5,14 +5,17 @@
 A Sprint 0 atende RF-01: abrir, redesenhar e fechar a janela de 800 × 600.
 A Sprint 1 acrescenta RF-02 e RF-03: dez criaturas se movem automaticamente,
 desenhadas como círculos, com reflexão nas bordas e lógica independente do FPS.
+A Sprint 2 implementa RF-04, RF-05 e RF-06: alimento, busca, consumo,
+metabolismo, morte e reposição; o mundo continua funcional após extinção.
 
 | Arquivo | Responsabilidade |
 | --- | --- |
 | `main.py` | Janela, eventos, relógio, acumulador e chamada das camadas |
-| `evolife/config.py` | Tamanho, cores, população, velocidades, raio e passo fixo |
-| `evolife/creature.py` | Cinco atributos e movimento com reflexão, sem Pygame |
-| `evolife/world.py` | Gerador aleatório próprio, criação e atualização da população |
-| `evolife/renderer.py` | Limpeza do fundo e desenho dos círculos, sem atualizar regras |
+| `evolife/config.py` | Janela, movimento, visão, energia, exploração e alimento |
+| `evolife/creature.py` | Estado, reflexão, busca, exploração e energia, sem Pygame |
+| `evolife/world.py` | Gerador próprio, população, interações, morte e reposição |
+| `evolife/food.py` | Posição imutável de uma unidade de alimento, sem Pygame |
+| `evolife/renderer.py` | Fundo, pontos verdes e círculos, sem atualizar regras |
 
 `evolife/config.py` concentra os parâmetros usados nesta sprint. O pacote
 `evolife` não inicializa Pygame na importação. A função `main()` retorna zero
@@ -106,28 +109,56 @@ nesta sprint. São criadas dez criaturas com posições, direções e velocidade
 sorteadas no intervalo do PRD (25 a 90 pixels/s), energia inicial 100,
 raio de desenho 7 e cor azul clara. Raio e cor são decisões visuais locais.
 
-Energia não é consumida. A direção muda apenas nas bordas; a busca e a mudança
-aleatória periódica de direção pertencem à sobrevivência da Sprint 2.
-Creature e World importam somente biblioteca padrão e configuração do projeto.
+Na Sprint 1, energia permanecia constante e a direção mudava nas bordas.
+Na Sprint 2, visão inicial 100 e eficiência 1,0 são atributos necessários à
+sobrevivência, dentro das faixas do PRD; genes/herança aguardam Sprint 4.
+Creature, Food e World continuam sem dependência de Pygame.
+
+### ADR-008 — Sobrevivência em passos fixos
+
+Food guarda x/y e é desenhado como ponto verde de raio 3, menor que a criatura.
+Há 75 unidades iniciais, geradas pelo mesmo RNG do mundo. A busca compara
+distâncias ao quadrado; alcance e contato são inclusivos. Empates de distância
+usam a ordem dos alimentos. Sem alvo, a criatura mantém a direção até vencer
+o intervalo sorteado de 1 a 3 s; o cronômetro avança apenas durante exploração.
+
+World valida dt antes de qualquer alteração. dt zero não muda estado. Para
+cada criatura viva, resolve contato inicial, direção, movimento com reflexão,
+contato final e gasto energético. Isso permite comida gerada na posição inicial
+e recuperação da energia antes do gasto do passo. Mortos anteriores não agem.
+O gasto é a fórmula original do PRD, proporcional a dt, limitado inferiormente
+a zero. Cada unidade fornece 45, até 130, antes do gasto do passo.
+
+Alimentos consumidos saem por uma nova lista, e criaturas mortas saem por uma
+lista de sobreviventes aplicada após o percurso. A ordem da população resolve
+disputas; uma unidade nunca fornece energia a duas criaturas. Não há contadores
+de mortes ou nascimentos, pois indicadores pertencem às próximas sprints.
+
+A reposição ocorre ao final: acumula frações de unidade a 1/s, cria unidades
+inteiras até 125 e zera crédito quando o mapa enche, evitando reposição em
+rajada após consumo. Tolerância absoluta de 1e-12 trata a soma de passos fixos
+perto de inteiros, sem arredondamento relativo. Reposição independe de população.
+A aplicação continua usando 1/60 s; passos maiores isolados não substituem a
+sequência fixa para comparar decisões e colisões de sobrevivência.
 
 ## Componentes por sprint
 
 | Componente | Responsabilidade | Introdução prevista |
 | --- | --- | --- |
 | `Creature` | Estado, posição e movimento, sem Pygame | Implementado na Sprint 1 |
-| `World` | Criação e atualização da população | Implementado na Sprint 1; interações futuras |
+| `World` | População e interações de sobrevivência | Sprint 1; sobrevivência na Sprint 2 |
 | `Renderer` | Desenho do mundo, separado das regras | Implementado na Sprint 1; HUD futuro |
-| `Food` | Estado de alimento e consumo | Sprint 2 |
+| `Food` | Estado de alimento; consumo resolvido por World | Implementado na Sprint 2 |
 | `Genetics` | Herança, mutação e limites | Sprint 4 |
 | `Metrics` | Agregações, amostragem e CSV | Sprint 5 |
 
 O passo fixo, o gerador próprio e o domínio independente de Pygame já existem.
-Nas próximas sprints autorizadas, nascimentos e mortes serão aplicados fora
-da iteração da população. As novas regras continuarão testáveis sem Pygame.
+Mortes já são aplicadas fora da iteração da população. Nascimentos aguardam
+a Sprint 3 autorizada; seguirão o mesmo princípio. As regras são testáveis sem Pygame.
 
 ## Fora do escopo atual
 
-Comida, gasto de energia, reprodução, genes, indicadores,
-CSV, pausa, reinício e controles de sementes aguardam suas sprints. Não criar
+Reprodução, genes herdáveis, indicadores, CSV, pausa, reinício e controles
+de sementes aguardam suas sprints. A Sprint 3 não está autorizada. Não criar
 arquivos vazios para esses componentes. Evolução e aprendizado individual
 são conceitos distintos; redes neurais pertencem ao backlog pós-1.0.

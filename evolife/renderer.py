@@ -2,7 +2,13 @@
 
 import pygame
 
-from evolife.config import BACKGROUND_COLOR, CREATURE_COLOR, CREATURE_RADIUS
+from evolife.config import (
+    BACKGROUND_COLOR,
+    CREATURE_COLOR,
+    CREATURE_RADIUS,
+    FOOD_COLOR,
+    FOOD_RADIUS,
+)
 from evolife.world import World
 
 
@@ -11,8 +17,15 @@ class Renderer:
         self.screen = screen
 
     def draw(self, world: World) -> None:
-        """Limpe o quadro e desenhe as criaturas, sem avançar a simulação."""
+        """Desenhe comida e criaturas, sem avançar a simulação."""
         self.screen.fill(BACKGROUND_COLOR)
+        for food in world.foods:
+            pygame.draw.circle(
+                self.screen,
+                FOOD_COLOR,
+                (round(food.x), round(food.y)),
+                FOOD_RADIUS,
+            )
         for creature in world.creatures:
             pygame.draw.circle(
                 self.screen,

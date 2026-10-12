@@ -1,6 +1,6 @@
 # Memória compartilhada — EvoLife
 
-Última atualização: 12/10/2026, entrega da Sprint 1 para revisão.
+Última atualização: 12/10/2026, validação manual da Sprint 2 relatada pelo usuário.
 
 ## Protocolo de continuidade
 
@@ -11,11 +11,15 @@ relevantes. Resultados abaixo representam evidências executadas, não intençõ
 
 ## Estado e autorização
 
-- Sprint atual: **1**, **entrega técnica concluída e aguardando revisão do usuário**.
-  Desenvolvimento interrompido ao concluir esta entrega.
+- Sprint atual: **2**, **entrega técnica concluída e aguardando revisão**.
+  Desenvolvimento interrompido; ajustes somente conforme revisão do usuário.
+- Usuário executou manualmente a aplicação e a suíte de testes da Sprint 2
+  no Ubuntu, sem identificar erros; relato registrado ao final deste documento.
+- Sprint 1 concluída, aprovada e integrada à main; merge do **PR #1**
+  confirmado pelo usuário nesta sessão.
 - Sprint 0 concluída e registrada pelo usuário em `73d5e04`.
-- Sprint 2: **não iniciada e não autorizada**. Encerrar ao concluir a Sprint 1
-  e aguardar revisão. Novos commits não autorizados.
+- Sprint 3: **não autorizada**. Encerrar ao concluir a Sprint 2 e aguardar
+  revisão. Novos commits não autorizados.
 - PRD original: lido e preservado; não editar.
 - Commits, tags, pushes e publicação: não autorizados.
 - Preservar Python global 3.14 e `.venv`; não usar sudo, instalar SDL ou
@@ -24,6 +28,14 @@ relevantes. Resultados abaixo representam evidências executadas, não intençõ
   no ambiente. Instalar exclusivamente pacotes pré-compilados.
 
 ## Implementação atual
+
+Sprint 2 implementada: Food, 75 alimentos iniciais, busca por visão, exploração,
+consumo, gasto energético, remoção de mortos e reposição a 1/s até 125.
+Creature, Food e World não conhecem Pygame. Renderer desenha criaturas azuis e
+comida verde. Tempo fixo, reflexão e encerramento preservados. Não há reprodução,
+herança, HUD, métricas ou controles novos. Evidências da entrega ao final.
+
+### Base histórica da Sprint 1
 
 Instruções compartilhadas em `AGENTS.md`, quatro documentos de projeto,
 README, .gitignore, dependências separadas, pacote `evolife` com configuração
@@ -40,7 +52,8 @@ não há comida, metabolismo, reprodução, genes, HUD ou comandos adicionais.
 - Python global e do `.venv`: 3.14.4.
 - `.venv` criado na primeira parte da sessão e preservado após nova instrução.
 - pip inicial do `.venv`: 25.1.1.
-- Git existente, branch `main`; Sprint 0 registrada em `73d5e04`.
+- Git no início da Sprint 0: branch `main`; registrada em `73d5e04`.
+- Sessão da Sprint 2: branch `develop`, HEAD `160687a`; sem novos commits.
 - Início da Sprint 1: árvore de trabalho limpa e sete testes existentes
   aprovados (`7 passed in 0.18s`), Python 3.14.4, pygame-ce 2.5.8 e pytest 9.1.1.
 - Dependência de execução: `pygame-ce==2.5.8`; módulo `pygame` verificado.
@@ -247,7 +260,123 @@ critérios da Sprint 1. A memória distingue segundos lógicos de duração real
 
 ## Próxima ação
 
-Aguardar revisão do usuário. Para verificar: `source .venv/bin/activate`,
-`python main.py` e `python -m pytest -q`. Ajustes da Sprint 1 devem responder
-à revisão; nenhuma tarefa da Sprint 2 ou novo commit está autorizada.
-Não iniciar comida, energia ou busca automaticamente na próxima sessão.
+Aguardar revisão do usuário da Sprint 2. Para avaliar, usar
+`source .venv/bin/activate`, `python main.py` e `python -m pytest -q`.
+Não iniciar Sprint 3, commits, pushes ou merges sem autorização explícita.
+
+
+## Abertura da Sprint 2 — 12/10/2026
+
+- Usuário confirmou Sprint 0 concluída, Sprint 1 aprovada e integrada à main
+  pelo PR #1, Sprint 2 autorizada e Sprint 3 bloqueada.
+- Branch verificada: develop; árvore limpa antes das alterações. HEAD 160687a,
+  referência local origin/develop no mesmo commit.
+- Referências locais main e origin/main ainda em 73d5e04. Não houve fetch nem
+  alteração da main; integração registrada pela confirmação do usuário.
+- Base executada: `.venv/bin/python -m pytest -q`, **33 passed in 0.51s**,
+  saída 0, SDL dummy. Nenhuma instalação adicional.
+- Registros anteriores de entrega sem commit e autorização limitada à Sprint 1
+  são históricos, sucedidos pela confirmação acima.
+- S2-01 concluída: instruções, memória, sprints e tarefas atualizadas.
+- Plano: comida e busca, consumo/metabolismo, morte/reposição, testes e
+  demonstração. Configuração centralizada e domínio sem Pygame preservados.
+
+## Implementação da Sprint 2 — tarefas S2-02 a S2-05
+
+- Food criado sem Pygame; 75 pontos verdes, raio 3, posições dentro do mundo.
+- Busca do alvo mais próximo até o limite inclusivo da visão. Empates usam
+  a ordem dos alimentos. Sem alvo, intervalo sorteado de 1 a 3 s para virar,
+  usando o gerador próprio. O intervalo avança somente ao vagar.
+- Visão inicial 100 e eficiência 1,0 são valores fixos dentro dos intervalos
+  do PRD. Ainda não são genes herdáveis. Velocidades originais preservadas.
+- Consumo em contato antes e depois do movimento; ganho 45 e teto 130.
+  Gasto aplicado em seguida pela fórmula original; energia mínima 0.
+- Mortos no início do passo não se movem nem comem. A lista de sobreviventes
+  substitui a população após a iteração, sem remoções durante o percurso.
+  Disputas por alimento são resolvidas na ordem da população, uma vez por unidade.
+- Reposição acumula frações a 1 unidade/s até 125; não acumula crédito com
+  mundo cheio e continua após extinção. Atualização zero não muda o estado;
+  dt negativo/não finito é rejeitado também com população zerada.
+- Primeira integração: `.venv/bin/python -m pytest -q`, **69 passed in 1.56s**,
+  saída 0, SDL dummy. Novos casos cobrem busca, consumo, competição, fórmula,
+  teto, mortes simultâneas, extinção, reposição e repetição interna por seed.
+- Revisão refinou a tolerância absoluta da reposição para evitar arredondar
+  segundos incompletos; teste de fronteira e teste do main após extinção adicionados.
+- S2-02 a S2-05 concluídas. S2-06 em andamento: validação final e demonstração.
+
+## Entrega da Sprint 2 — tarefas S2-06 e S2-07
+
+RF-04, RF-05 e RF-06 implementados. Arquivos novos: `evolife/food.py`,
+`tests/test_food.py`, `tests/test_energy.py` e `docs/media/sprint2.gif`.
+Config, Creature, World e Renderer estendidos; testes de mundo, desenho e
+cadências atualizados para as regras novas. `main.py`, os 17 testes de movimento
+e os sete de ciclo de vida da aplicação foram preservados integralmente.
+AGENTS, memória, tarefas, sprints, README e arquitetura refletem a entrega.
+
+| Verificação executada | Resultado |
+| --- | --- |
+| `.venv/bin/python -m pytest -q` final | **71 passed in 1.54s**, saída 0, SDL dummy |
+| `.venv/bin/python -m pip --no-cache-dir check` | No broken requirements found., saída 0 |
+| `.venv/bin/python -m compileall -q main.py evolife tests` | Saída 0 |
+| `git diff --check` durante a validação | Saída 0, sem avisos |
+| Python global e do .venv | Ambos 3.14.4, preservados |
+| `sha256sum EvoLife_PRD_Roadmap.md` | 740fabf9754d5fa4081a8229607a3ced6bd27c3c333440062a491904a10f4802, original preservado |
+| Demonstração de alimentação | 360 passos de 1/60 s; alimento consumido em 2 s; energia 27,36217 → 72,34000 após consumo e gasto do passo |
+| GIF via ffprobe | 800 × 600, 90 quadros, 6,000 s, 158.273 bytes |
+| Frame da demonstração inspecionado pelo agente | Criatura azul, alimento verde e legenda com energia recuperada |
+
+A suíte contém 38 casos adicionais à base de 33: energia, busca, exploração,
+visão/contato inclusivos, alimento inicial, competição, reposição fracionada,
+limite sem crédito acumulado, remoção simultânea de mortos e extinção.
+O teste do main após extinção desenha dez quadros com 600 passos lógicos,
+repõe dez unidades e encerra pelo evento QUIT com o display liberado.
+As cadências de 100, 10 e 1 FPS produzem posição e energia iguais, 60 passos
+e uma reposição por segundo. O domínio continua importando sem Pygame.
+
+Demonstração: cenário preparado com uma criatura em (300,300), velocidade 40,
+energia 30, visão 100, eficiência 1, intervalo de exploração 3 e alimento
+em (390,300), seed 42. O World e o Renderer reais avançaram 360 passos;
+90 superfícies foram convertidas em GIF a 15 FPS pelo ffmpeg preexistente.
+Renderização fora da tela, ambiente SDL dummy, sem janela no desktop.
+Legendas de energia/tempo foram adicionadas apenas à demonstração, sem HUD
+na aplicação. Ao final, energia 67,02. Arquivos intermediários foram temporários;
+ffmpeg continua sendo ferramenta de mídia, sem nova dependência do jogo.
+
+Revisão de código executada nesta sessão: separação domínio/desenho, fórmula
+original, ordem de alimentação e gasto, desempate e consumo único, aplicação
+segura de mortes, limite/fração de reposição e validação de dt após extinção.
+A revisão refinou a tolerância da reposição; os dois casos adicionais de
+fronteira e ciclo da aplicação passaram na suíte final.
+
+Limites no momento da entrega técnica: não houve teste da Sprint 2 com driver gráfico X11, avaliação manual
+pelo usuário ou Windows. GIF fora da tela e testes dummy não comprovam fluidez
+no monitor. Não houve calibração da fórmula nem benchmark de 100 criaturas ou
+estabilidade de 15 minutos (Sprint 7). Regras de sobrevivência usam passos fixos;
+nenhuma garantia de equivalência de decisões para dt arbitrariamente grande.
+Sem reprodução: a população pode chegar a zero e não se renova nesta sprint.
+Não houve dificuldade de ambiente nem instalação adicional.
+
+S2-06 e S2-07 concluídas; entrega técnica da Sprint 2 aguardando revisão.
+Não foram executados commits, tags, pushes, merges, fetch ou publicação.
+A main local foi preservada. Nenhum trabalho da Sprint 3 foi iniciado.
+
+Conferência de encerramento: branch develop, HEAD 160687a e main local 73d5e04
+inalterados; 13 arquivos rastreados modificados e quatro arquivos novos,
+todos referentes à entrega. `git diff --check` final passou; whitespace dos
+três arquivos Python novos e destinos dos links locais também passaram.
+
+## Validação pelo usuário — Sprint 2, Ubuntu — 12/10/2026
+
+O usuário informou ter executado manualmente a aplicação e a suíte de testes
+da Sprint 2 no Ubuntu, sem identificar erros em nenhuma das duas execuções.
+Esta é uma evidência relatada pelo usuário, distinta dos testes automatizados
+com SDL dummy e da demonstração fora da tela executados pelo agente.
+
+Os resultados anteriores foram preservados, incluindo os 71 testes aprovados
+na validação do agente. A suíte não foi executada novamente pelo agente nesta
+atualização documental. A pendência de avaliação manual da aplicação no Ubuntu
+fica atendida pelo relato acima, sem alterar o estado de aprovação ou integração
+da Sprint 2. A Sprint 3 permanece não autorizada.
+
+Somente esta memória foi atualizada nesta tarefa; nenhum código foi modificado
+e nenhum commit foi realizado. As alterações preexistentes foram preservadas.

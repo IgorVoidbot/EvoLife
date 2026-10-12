@@ -2,8 +2,24 @@
 
 from dataclasses import dataclass
 import math
+import random
 
-from evolife.config import CREATURE_RADIUS, INITIAL_ENERGY, WINDOW_HEIGHT, WINDOW_WIDTH
+from evolife.config import (
+    BASE_ENERGY_COST,
+    CREATURE_RADIUS,
+    FOOD_ENERGY,
+    INITIAL_EFFICIENCY,
+    INITIAL_ENERGY,
+    INITIAL_VISION,
+    MAX_ENERGY,
+    MAX_WANDER_INTERVAL,
+    MIN_WANDER_INTERVAL,
+    SPEED_ENERGY_COST,
+    VISION_ENERGY_COST,
+    WINDOW_HEIGHT,
+    WINDOW_WIDTH,
+)
+from evolife.food import Food
 
 
 def _reflect_axis(
@@ -30,6 +46,44 @@ class Creature:
     direction: float
     speed: float
     energy: float = INITIAL_ENERGY
+    vision: float = INITIAL_VISION
+    efficiency: float = INITIAL_EFFICIENCY
+    wander_remaining: float = 0.0
+
+    def steer(self, dt: float, foods: list[Food], rng: random.Random) -> None:
+        """Persiga o alimento visível mais próximo ou mude a direção ao vagar."""
+        target = None
+        nearest_squared = self.vision**2
+        for food in foods:
+            distance_squared = (food.x - self.x) ** 2 + (food.y - self.y) ** 2
+            if distance_squared <= nearest_squared and (
+                target is None or distance_squared < nearest_squared
+            ):
+                target = food
+                nearest_squared = distance_squared
+        if target is not None:
+            self.direction = math.atan2(target.y - self.y, target.x - self.x)
+            return
+
+        self.wander_remaining -= dt
+        while self.wander_remaining <= 0:
+            self.direction = rng.uniform(0.0, math.tau)
+            self.wander_remaining += rng.uniform(
+                MIN_WANDER_INTERVAL, MAX_WANDER_INTERVAL
+            )
+
+    def eat(self) -> None:
+        """Receba a energia de uma unidade de comida, limitada ao teto."""
+        self.energy = min(MAX_ENERGY, self.energy + FOOD_ENERGY)
+
+    def spend_energy(self, dt: float) -> None:
+        """Aplique o gasto por segundo do PRD, sem energia negativa."""
+        cost = (
+            BASE_ENERGY_COST
+            + SPEED_ENERGY_COST * self.speed
+            + VISION_ENERGY_COST * self.vision
+        ) * self.efficiency
+        self.energy = max(0.0, self.energy - cost * dt)
 
     def update(
         self,
