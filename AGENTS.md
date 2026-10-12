@@ -14,11 +14,14 @@ de plugins, configurações privadas ou memória exclusiva de um CLI.
 
 ## Limites vigentes
 
-- Trabalhe somente na Sprint 0. A Sprint 1 depende de autorização explícita
-  do usuário, mesmo depois de a Sprint 0 estar pronta.
+- Trabalhe somente na Sprint 1, autorizada pelo usuário. Ao concluir,
+  interrompa o desenvolvimento e aguarde revisão. Não avance para a Sprint 2.
+  A entrega técnica da Sprint 1 está concluída; consulte a memória antes de
+  retomar e aguarde orientação do usuário para qualquer novo trabalho.
 - Preserve arquivos existentes e mudanças do usuário. Nunca altere o PRD.
 - Não faça commits, tags, pushes ou publicação sem autorização explícita.
-  A tarefa de commit do PRD fica suspensa por determinação do usuário.
+  A Sprint 0 já foi registrada pelo usuário; novos commits continuam proibidos
+  sem autorização explícita.
 - Preserve o Python global 3.14 e o `.venv` existente. Não use sudo, não
   instale bibliotecas no sistema operacional e não altere permissões.
 - Use `pygame-ce==2.5.8`, que fornece `import pygame`; não instale também
@@ -52,10 +55,11 @@ o estado antes de escrever para preservar os registros de outras sessões.
 - Prefira Python, Pygame e biblioteca padrão; explique novas dependências.
 - Centralize as configurações atuais em `evolife/config.py`.
 - Mantenha funções pequenas, nomes claros e importação sem efeitos colaterais.
-- Nas próximas sprints autorizadas, mantenha domínio independente do Pygame,
+- Mantenha domínio independente do Pygame,
   tempo lógico fixo de 1/60 s e gerador aleatório próprio do mundo.
-- Crie apenas componentes necessários à sprint vigente. Não crie classes de
-  criaturas, mundo, alimentos, genética ou métricas antecipadamente.
+- Crie apenas componentes necessários à sprint vigente. Creature, World e
+  Renderer pertencem à Sprint 1; comida, metabolismo, reprodução, genética,
+  métricas e controles novos aguardam suas sprints.
 - Valide o comportamento afetado com testes úteis e registre seus limites.
 - Documente em português; use nomes de código em inglês.
 
@@ -72,3 +76,13 @@ python -m pip check
 No Linux, ative com `source .venv/bin/activate`; no PowerShell,
 com `.venv\Scripts\Activate.ps1`. Os testes configuram SDL `dummy` sem
 abrir uma janela no desktop. A avaliação visual usa `python main.py`.
+
+## Fluxo de desenvolvimento Git
+
+- develop é a branch de desenvolvimento.
+- main contém somente versões aprovadas.
+- Implementações devem ocorrer na develop.
+- Nunca fazer merge na main sem aprovação do usuário.
+- Cada sprint deve ter testes e revisão de código.
+- Atualizar PROJECT_STATE.md antes de encerrar.
+- Codex CLI e OpenCode CLI devem respeitar essas regras.

@@ -1,7 +1,16 @@
-"""Configuração da janela; regras de simulação virão nas próximas sprints."""
+"""Parâmetros da janela e do movimento inicial da Sprint 1."""
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 WINDOW_TITLE = "EvoLife"
 BACKGROUND_COLOR = (0, 0, 0)
 MAX_FPS = 60
+FIXED_DT = 1 / 60
+
+INITIAL_POPULATION = 10
+INITIAL_ENERGY = 100.0
+MIN_SPEED = 25.0
+MAX_SPEED = 90.0
+CREATURE_RADIUS = 7
+CREATURE_COLOR = (80, 190, 255)
+DEFAULT_SEED = 42
