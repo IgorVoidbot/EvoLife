@@ -1,6 +1,6 @@
 # Quadro de tarefas
 
-Escopo autorizado: Sprint 1. Manter uma tarefa
+Escopo autorizado: Sprint 2. Sprint 3 não autorizada. Manter uma tarefa
 de implementação em andamento por vez. Atualizar este arquivo ao concluir
 cada tarefa; evidências detalhadas ficam em `PROJECT_STATE.md`.
 
@@ -21,7 +21,7 @@ cada tarefa; evidências detalhadas ficam em `PROJECT_STATE.md`.
 | S0-13 | Atualizar memória e entregar resumo | Estado, dificuldades resolvidas, evidências e próxima ação registrados | Concluída |
 | S0-14 | Primeiro commit do PRD | Commit 73d5e04 feito pelo usuário | Concluída pelo usuário |
 
-## Sprint 1 — entrega para revisão
+## Sprint 1 — concluída, aprovada e integrada
 
 | ID | Próxima tarefa | Dependência | Status |
 | --- | --- | --- | --- |
@@ -32,9 +32,21 @@ cada tarefa; evidências detalhadas ficam em `PROJECT_STATE.md`.
 | S1-05 | Executar testes e verificar aplicação | 33 testes, compileall, pip check e verificação X11 aprovados | Concluída |
 | S1-06 | Produzir GIF de 15 segundos | docs/media/sprint1.gif: 800 × 600, 225 quadros distintos, 15 s | Concluída |
 | S1-07 | Atualizar documentação e memória | Decisões, evidências, limites e entrega para revisão | Concluída |
-| S1-08 | Commit da Sprint 1 | Requer autorização explícita | Suspenso pelo usuário |
+| S1-08 | Registro e integração da Sprint 1 | Commit 0f32887; PR #1 integrado à main, conforme usuário | Concluída pelo usuário |
 
-Sprint 2: não iniciada e não autorizada.
+## Sprint 2 — entrega técnica concluída para revisão
+
+| ID | Tarefa | Critério / evidência | Status |
+| --- | --- | --- | --- |
+| S2-01 | Atualizar autorização e continuidade | Sprint 1 aprovada/PR #1; Sprint 2 autorizada; Sprint 3 bloqueada | Concluída |
+| S2-02 | Criar Food e população inicial de alimentos | 75 unidades dentro dos limites; domínio sem Pygame | Concluída |
+| S2-03 | Implementar busca e exploração | Alvo visível mais próximo; nova direção a cada 1–3 s sem alvo | Concluída |
+| S2-04 | Implementar consumo e energia | Colisão remove alimento; ganho 45, teto 130 e fórmula do PRD | Concluída |
+| S2-05 | Remover mortos e repor comida | Remoção segura; 1 unidade/s até 125; extinção funcional | Concluída |
+| S2-06 | Validar regras e regressão; demonstrar alimentação | 71 testes aprovados; GIF de 6 s fora da tela | Concluída |
+| S2-07 | Revisar código e entregar documentação | Revisão, README, arquitetura, evidências e limites registrados | Concluída |
+
+Não iniciar Sprint 3 nem realizar commits automaticamente.
 
 As demais entregas estão em `SPRINTS.md` e no PRD. Aprendizado desta fundação:
 a distribuição instalada pode mudar por compatibilidade sem alterar o nome

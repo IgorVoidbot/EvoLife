@@ -1,4 +1,4 @@
-"""População inicial e movimento coletivo, sem regras de sobrevivência."""
+"""População, limites e independência do domínio."""
 
 import random
 import subprocess
@@ -35,7 +35,7 @@ def test_all_creatures_move_and_stay_inside_for_one_minute():
     assert len(world.creatures) == 10
     for creature, initial in zip(world.creatures, initial_positions):
         assert (creature.x, creature.y) != pytest.approx(initial)
-        assert creature.energy == 100.0
+        assert 0 < creature.energy <= 130.0
 
 
 def test_empty_world_remains_updatable():
@@ -50,7 +50,8 @@ def test_domain_imports_without_pygame():
         [
             sys.executable,
             "-c",
-            "import evolife.creature, evolife.world, sys; assert 'pygame' not in sys.modules",
+            "import evolife.creature, evolife.world, evolife.food, sys; "
+            "assert 'pygame' not in sys.modules",
         ],
         capture_output=True,
         text=True,

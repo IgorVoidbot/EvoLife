@@ -1,10 +1,10 @@
 # EvoLife
 
 Laboratório desktop 2D de vida e evolução artificial, feito em Python.
-O objetivo futuro é observar criaturas buscando alimento, reproduzindo-se e
-transmitindo genes. **A implementação atual vai até a Sprint 1:**
-dez círculos se movem sozinhos em uma janela de 800 × 600 e refletem nas bordas.
-O processamento de eventos e o encerramento seguro da Sprint 0 foram preservados.
+O objetivo futuro é observar reprodução e transmissão de genes.
+**A implementação atual vai até a Sprint 2:** dez criaturas se movimentam,
+buscam pontos verdes de comida, gastam energia e morrem quando ela acaba.
+Movimento com reflexão, passos fixos e encerramento seguro foram preservados.
 
 ## Requisitos
 
@@ -38,25 +38,42 @@ python -c "import pygame; print(pygame.version.ver)"
 python main.py
 ```
 
-A janela deve mostrar dez círculos azuis claros sobre fundo preto, movendo-se
-sem entradas do teclado e refletindo nas bordas. Feche pelo botão da janela,
+A janela começa com dez círculos azuis claros e 75 pontos verdes sobre fundo
+preto. As criaturas procuram alimento, refletem nas bordas e podem morrer;
+a comida consumida desaparece e novos pontos surgem pelo tempo simulado. Feche pelo botão da janela,
 pressione **Esc** ou use **Ctrl+C** no terminal para sair.
 Esses são os únicos comandos implementados nesta sprint.
 
-## Como estudar o movimento
+## Movimento e sobrevivência
 
 Comece por `evolife/creature.py`: cada criatura guarda x, y, direção em radianos,
-velocidade em pixels/s e energia. Com direção zero, velocidade 40 e `dt=0.5`,
+velocidade em pixels/s, energia, visão e eficiência. Com direção zero, velocidade 40 e `dt=0.5`,
 a posição `(100, 100)` vira `(120, 100)`, conforme o PRD. O raio de 7 pixels
-entra no cálculo das bordas, e a energia permanece 100 nesta sprint.
+entra no cálculo das bordas. `Creature.update` trata o movimento; `World.update`
+coordena a busca, a alimentação, o gasto energético e as mortes.
 
-`World` cria dez criaturas e atualiza a população sem conhecer Pygame.
+`World` cria dez criaturas e 75 alimentos e atualiza o domínio sem Pygame.
 `Renderer` desenha o estado sem atualizá-lo. `main.py` acumula o tempo medido
 pelo relógio e avança o mundo em passos de 1/60 s, independentemente de quantos
 quadros são desenhados. A configuração reúne velocidades iniciais de 25 a
 90 pixels/s e uma semente interna padrão 42, sem novos controles de usuário.
 
-Não há comida, consumo de energia, reprodução ou genes nesta entrega.
+A visão inicial é 100 pixels e a eficiência é 1,0, atributos simples ainda
+sem herança. A criatura segue o alimento mais próximo dentro da visão. Sem
+alvo, mantém a direção e sorteia outra após 1 a 3 segundos de exploração.
+
+A energia começa em 100; o gasto por segundo segue
+`(0.55 + 0.012 * speed + 0.003 * vision) * efficiency`.
+Cada alimento repõe 45 pontos até o teto de 130. O contato considera os raios
+de criatura (7) e comida (3), antes e depois do movimento. Depois de comer,
+a criatura paga o gasto do passo e sai da população se atingir zero.
+Criaturas já mortas não comem nem se movem. Na disputa por uma unidade,
+a primeira criatura em contato na ordem da população a consome.
+
+A reposição é de 1 alimento por segundo simulado até 125 unidades, sem crédito
+acumulado enquanto o mapa estiver cheio. Mesmo sem criaturas, a aplicação
+continua desenhando, repondo alimento e aceitando comandos de encerramento.
+Reprodução, herança, indicadores e controles novos aguardam suas sprints.
 
 No Windows, em uma instalação nova, crie o ambiente com `py -3.14 -m venv .venv`
 e ative no PowerShell com `.venv\Scripts\Activate.ps1`; os comandos `python`
@@ -83,12 +100,19 @@ tempo simulado em diferentes cadências de renderização. Há uma execução de
 Para verificar a aparência, execute `python main.py` no desktop e encerre
 com Esc ou pelo botão. O driver `dummy` não comprova a aparência no monitor.
 
-Os 33 testes passaram com Python 3.14.4, pygame-ce 2.5.8 e pytest 9.1.1,
-incluindo os sete casos da Sprint 0. A verificação gráfica X11 também passou;
-veja a [demonstração de 15 segundos da Sprint 1](docs/media/sprint1.gif).
-A [demonstração anterior](docs/media/sprint0.mp4)
-da janela vazia continua preservada. Resultados completos, verificação gráfica
-e limites estão em [PROJECT_STATE.md](docs/PROJECT_STATE.md).
+Os **71 testes** passaram com Python 3.14.4, pygame-ce 2.5.8 e pytest 9.1.1.
+Incluem busca, consumo, competição, fórmula de energia, teto, remoção de
+mortos, reposição, extinção e os comportamentos das sprints anteriores.
+Veja a [demonstração de alimentação da Sprint 2](docs/media/sprint2.gif):
+cena preparada com uma criatura de energia 30, mostrando busca e recuperação.
+O GIF foi renderizado fora da tela; suas legendas de energia são exclusivas
+da demonstração e não fazem parte da interface atual.
+
+A [demonstração da Sprint 1](docs/media/sprint1.gif), validada com X11 naquela
+sprint, e o [vídeo da Sprint 0](docs/media/sprint0.mp4) foram preservados.
+Nesta Sprint 2 não houve verificação com driver gráfico de desktop nem
+inspeção manual pelo usuário. Resultados e limites estão em
+[PROJECT_STATE.md](docs/PROJECT_STATE.md).
 
 Se a instalação falhar, preserve a mensagem completa e consulte
 [PROJECT_STATE.md](docs/PROJECT_STATE.md). O uso de `--only-binary=:all:`
@@ -104,9 +128,10 @@ main.py                  Janela, eventos e tempo fixo
 requirements.txt         pygame-ce, execução
 requirements-dev.txt     pytest, desenvolvimento
 pytest.ini               Descoberta dos testes
-evolife/config.py         Parâmetros de janela e movimento
-evolife/creature.py       Estado e movimento da criatura
-evolife/world.py          População e atualização do mundo
+evolife/config.py         Parâmetros de janela, movimento e sobrevivência
+evolife/creature.py       Movimento, busca e energia
+evolife/world.py          População, interações, morte e reposição
+evolife/food.py           Posição de alimento, sem Pygame
 evolife/renderer.py       Desenho dos círculos com Pygame
 tests/                   Movimento, mundo, desenho, tempo e ciclo de vida
 docs/ARCHITECTURE.md      Arquitetura e decisões técnicas
@@ -116,5 +141,6 @@ docs/PROJECT_STATE.md     Memória compartilhada e resultados da sessão
 ```
 
 Leia `AGENTS.md` e a memória compartilhada antes de alterar o projeto em
-qualquer CLI. A Sprint 1 está concluída e aguarda revisão do usuário. A Sprint 2
-e novos commits exigem autorização explícita.
+qualquer CLI. A Sprint 1 foi aprovada e integrada à main pelo PR #1. A entrega
+técnica da Sprint 2 está concluída e aguarda revisão. Sprint 3 não autorizada;
+commits, pushes e merges continuam exigindo autorização explícita.
