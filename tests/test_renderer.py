@@ -72,3 +72,19 @@ def test_dead_creature_disappears_after_world_update():
     renderer.draw(world)
     assert world.creatures == []
     assert tuple(screen.get_at((100, 100)))[:3] == BACKGROUND_COLOR
+
+
+def test_renderer_displays_newborn_without_advancing_lifecycle_or_counters():
+    world = World()
+    world.creatures = [Creature(400, 300, 0, 40, energy=120, age_seconds=20)]
+    world.foods.clear()
+    world.update(1 / 60)
+    assert world.births_total == 1
+    previous = [vars(creature).copy() for creature in world.creatures]
+    counters = (world.births_total, world.deaths_total)
+    screen = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
+    Renderer(screen).draw(world)
+    for creature in world.creatures:
+        assert tuple(screen.get_at((round(creature.x), round(creature.y))))[:3] == CREATURE_COLOR
+    assert [vars(creature) for creature in world.creatures] == previous
+    assert (world.births_total, world.deaths_total) == counters

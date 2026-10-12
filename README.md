@@ -1,9 +1,10 @@
 # EvoLife
 
 Laboratório desktop 2D de vida e evolução artificial, feito em Python.
-O objetivo futuro é observar reprodução e transmissão de genes.
-**A implementação atual vai até a Sprint 2:** dez criaturas se movimentam,
-buscam pontos verdes de comida, gastam energia e morrem quando ela acaba.
+O objetivo futuro é investigar evolução com mutações e dados.
+**A implementação atual vai até a Sprint 3:** criaturas se movimentam,
+buscam comida, gastam energia, morrem e geram descendentes por reprodução
+assexuada. A população começa com dez e pode aumentar ou diminuir.
 Movimento com reflexão, passos fixos e encerramento seguro foram preservados.
 
 ## Requisitos
@@ -39,8 +40,9 @@ python main.py
 ```
 
 A janela começa com dez círculos azuis claros e 75 pontos verdes sobre fundo
-preto. As criaturas procuram alimento, refletem nas bordas e podem morrer;
-a comida consumida desaparece e novos pontos surgem pelo tempo simulado. Feche pelo botão da janela,
+preto. As criaturas procuram alimento, refletem nas bordas, podem reproduzir
+e morrer; a comida consumida desaparece e novos pontos surgem pelo tempo
+simulado. Feche pelo botão da janela,
 pressione **Esc** ou use **Ctrl+C** no terminal para sair.
 Esses são os únicos comandos implementados nesta sprint.
 
@@ -50,7 +52,7 @@ Comece por `evolife/creature.py`: cada criatura guarda x, y, direção em radian
 velocidade em pixels/s, energia, visão e eficiência. Com direção zero, velocidade 40 e `dt=0.5`,
 a posição `(100, 100)` vira `(120, 100)`, conforme o PRD. O raio de 7 pixels
 entra no cálculo das bordas. `Creature.update` trata o movimento; `World.update`
-coordena a busca, a alimentação, o gasto energético e as mortes.
+coordena busca, alimentação, metabolismo, idade, nascimentos e mortes.
 
 `World` cria dez criaturas e 75 alimentos e atualiza o domínio sem Pygame.
 `Renderer` desenha o estado sem atualizá-lo. `main.py` acumula o tempo medido
@@ -58,8 +60,8 @@ pelo relógio e avança o mundo em passos de 1/60 s, independentemente de quanto
 quadros são desenhados. A configuração reúne velocidades iniciais de 25 a
 90 pixels/s e uma semente interna padrão 42, sem novos controles de usuário.
 
-A visão inicial é 100 pixels e a eficiência é 1,0, atributos simples ainda
-sem herança. A criatura segue o alimento mais próximo dentro da visão. Sem
+A visão inicial é 100 pixels e a eficiência é 1,0. Esses atributos simples
+são copiados nos descendentes, sem mutação. A criatura segue o alimento mais próximo dentro da visão. Sem
 alvo, mantém a direção e sorteia outra após 1 a 3 segundos de exploração.
 
 A energia começa em 100; o gasto por segundo segue
@@ -73,7 +75,24 @@ a primeira criatura em contato na ordem da população a consome.
 A reposição é de 1 alimento por segundo simulado até 125 unidades, sem crédito
 acumulado enquanto o mapa estiver cheio. Mesmo sem criaturas, a aplicação
 continua desenhando, repondo alimento e aceitando comandos de encerramento.
-Reprodução, herança, indicadores e controles novos aguardam suas sprints.
+## Reprodução e ciclo de vida
+
+A criatura pode reproduzir quando sua idade chega a 10 segundos, sua energia
+é pelo menos 110 e o cooldown está encerrado. Esses requisitos são avaliados
+depois de comer e pagar o metabolismo do passo. O progenitor transfere 45
+pontos ao filhote e espera 10 segundos até poder reproduzir novamente.
+O nascimento conserva a energia disponível naquele instante.
+
+O filhote nasce próximo ao progenitor e dentro das bordas, com energia 45,
+idade zero, novo ID e geração do progenitor +1. Copia velocidade, visão e
+eficiência sem mutações. Passa a agir apenas no próximo passo lógico.
+IDs nunca são reutilizados no experimento; `World` guarda os totais de
+nascimentos e mortes. A população inicial não conta como nascimento.
+
+Não há HUD nesta sprint: os contadores estão disponíveis no domínio e nos
+testes. Estrutura genética, mutações, painel, CSV e controles aguardam suas
+sprints. Com população zerada, a aplicação continua funcionando e repondo
+comida, sem recriar criaturas automaticamente.
 
 No Windows, em uma instalação nova, crie o ambiente com `py -3.14 -m venv .venv`
 e ative no PowerShell com `.venv\Scripts\Activate.ps1`; os comandos `python`
@@ -100,18 +119,32 @@ tempo simulado em diferentes cadências de renderização. Há uma execução de
 Para verificar a aparência, execute `python main.py` no desktop e encerre
 com Esc ou pelo botão. O driver `dummy` não comprova a aparência no monitor.
 
-Os **71 testes** passaram com Python 3.14.4, pygame-ce 2.5.8 e pytest 9.1.1.
+Os **103 testes** passaram com Python 3.14.4, pygame-ce 2.5.8 e pytest 9.1.1.
 Incluem busca, consumo, competição, fórmula de energia, teto, remoção de
 mortos, reposição, extinção e os comportamentos das sprints anteriores.
-Veja a [demonstração de alimentação da Sprint 2](docs/media/sprint2.gif):
+Também verificam idade, cooldown, bloqueios de reprodução, conservação de
+energia no nascimento, posição, IDs, geração, eventos e determinismo.
+Veja a [demonstração de nascimentos da Sprint 3](docs/media/sprint3.gif):
+configuração padrão, seed 42, dez criaturas e 75 alimentos iniciais, energia
+100, idade zero, passos de 1/60 s. Em 60 s simulados ocorreram 28 nascimentos
+e 5 mortes; população máxima 34 e final 33. O GIF dura 15 s e exibe a execução
+a 4x. Legendas e anéis de nascimento foram adicionados somente à mídia,
+renderizada fora da tela; as regras de energia e reprodução são as reais.
+O usuário executou manualmente o EvoLife da Sprint 3 no Ubuntu e não identificou
+erros. Esse relato complementa os 103 testes automatizados anteriores, cujos
+resultados foram preservados.
+
+A [demonstração de alimentação da Sprint 2](docs/media/sprint2.gif) mostra:
 cena preparada com uma criatura de energia 30, mostrando busca e recuperação.
 O GIF foi renderizado fora da tela; suas legendas de energia são exclusivas
 da demonstração e não fazem parte da interface atual.
 
 A [demonstração da Sprint 1](docs/media/sprint1.gif), validada com X11 naquela
 sprint, e o [vídeo da Sprint 0](docs/media/sprint0.mp4) foram preservados.
-Nesta Sprint 2 não houve verificação com driver gráfico de desktop nem
-inspeção manual pelo usuário. Resultados e limites estão em
+Na Sprint 2 o usuário executou manualmente aplicação e testes no Ubuntu sem
+identificar erros. Na Sprint 3 os testes usam SDL dummy e o GIF foi renderizado
+fora da tela; não houve execução com driver gráfico de desktop pelo agente.
+Resultados e limites estão em
 [PROJECT_STATE.md](docs/PROJECT_STATE.md).
 
 Se a instalação falhar, preserve a mensagem completa e consulte
@@ -129,8 +162,8 @@ requirements.txt         pygame-ce, execução
 requirements-dev.txt     pytest, desenvolvimento
 pytest.ini               Descoberta dos testes
 evolife/config.py         Parâmetros de janela, movimento e sobrevivência
-evolife/creature.py       Movimento, busca e energia
-evolife/world.py          População, interações, morte e reposição
+evolife/creature.py       Movimento, busca, energia e ciclo básico
+evolife/world.py          População, reprodução, morte, totais e reposição
 evolife/food.py           Posição de alimento, sem Pygame
 evolife/renderer.py       Desenho dos círculos com Pygame
 tests/                   Movimento, mundo, desenho, tempo e ciclo de vida
@@ -142,5 +175,6 @@ docs/PROJECT_STATE.md     Memória compartilhada e resultados da sessão
 
 Leia `AGENTS.md` e a memória compartilhada antes de alterar o projeto em
 qualquer CLI. A Sprint 1 foi aprovada e integrada à main pelo PR #1. A entrega
-técnica da Sprint 2 está concluída e aguarda revisão. Sprint 3 não autorizada;
+da Sprint 2 foi aprovada e integrada pelo PR #3 (3b75b6e). Sprint 3 autorizada
+com entrega técnica concluída e aguardando revisão. Sprint 4 não autorizada;
 commits, pushes e merges continuam exigindo autorização explícita.

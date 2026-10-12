@@ -7,13 +7,16 @@ A Sprint 1 acrescenta RF-02 e RF-03: dez criaturas se movem automaticamente,
 desenhadas como círculos, com reflexão nas bordas e lógica independente do FPS.
 A Sprint 2 implementa RF-04, RF-05 e RF-06: alimento, busca, consumo,
 metabolismo, morte e reposição; o mundo continua funcional após extinção.
+A Sprint 3 implementa RF-07: idade, cooldown, nascimento por transferência e
+contadores. IDs e geração são a estrutura mínima necessária aos descendentes,
+autorizada nesta sprint; mutações e agrupamento de genes aguardam Sprint 4.
 
 | Arquivo | Responsabilidade |
 | --- | --- |
 | `main.py` | Janela, eventos, relógio, acumulador e chamada das camadas |
-| `evolife/config.py` | Janela, movimento, visão, energia, exploração e alimento |
-| `evolife/creature.py` | Estado, reflexão, busca, exploração e energia, sem Pygame |
-| `evolife/world.py` | Gerador próprio, população, interações, morte e reposição |
+| `evolife/config.py` | Janela, sobrevivência e parâmetros de reprodução |
+| `evolife/creature.py` | Estado, movimento, busca, energia, idade e elegibilidade |
+| `evolife/world.py` | Gerador próprio, população, interações, nascimento, morte e totais |
 | `evolife/food.py` | Posição imutável de uma unidade de alimento, sem Pygame |
 | `evolife/renderer.py` | Fundo, pontos verdes e círculos, sem atualizar regras |
 
@@ -131,8 +134,9 @@ a zero. Cada unidade fornece 45, até 130, antes do gasto do passo.
 
 Alimentos consumidos saem por uma nova lista, e criaturas mortas saem por uma
 lista de sobreviventes aplicada após o percurso. A ordem da população resolve
-disputas; uma unidade nunca fornece energia a duas criaturas. Não há contadores
-de mortes ou nascimentos, pois indicadores pertencem às próximas sprints.
+disputas; uma unidade nunca fornece energia a duas criaturas. Na Sprint 2 ainda não havia contadores
+de mortes ou nascimentos; a Sprint 3 acrescentou esses totais ao domínio,
+sem antecipar o painel de indicadores.
 
 A reposição ocorre ao final: acumula frações de unidade a 1/s, cria unidades
 inteiras até 125 e zera crédito quando o mapa enche, evitando reposição em
@@ -141,24 +145,57 @@ perto de inteiros, sem arredondamento relativo. Reposição independe de popula�
 A aplicação continua usando 1/60 s; passos maiores isolados não substituem a
 sequência fixa para comparar decisões e colisões de sobrevivência.
 
+### ADR-009 — Reprodução por transferência e aplicação ao final
+
+Creature guarda age_seconds e reproduction_cooldown, ambos inicialmente zero.
+World avança os dois por dt para cada criatura viva. Elegibilidade é verificada
+após alimentação e gasto do passo: idade ≥10 s, energia ≥110 e espera encerrada.
+Ao nascer, o progenitor perde 45 e recebe cooldown 10 s; o filhote recebe 45,
+idade zero, cooldown zero, geração do progenitor +1 e speed/vision/efficiency
+copiados. A operação de nascimento conserva energia; o metabolismo do passo
+continua consumindo energia separadamente. Não há mutação ou classe Genetics.
+
+World usa contador crescente de IDs, iniciando em zero, sem reutilização
+após mortes. A população inicial tem geração zero e não incrementa births_total.
+Criaturas isoladas têm id None até serem inseridas e processadas no mundo;
+World também atribui IDs em cenários preparados. A aplicação não edita IDs.
+Não há parent_id nesta estrutura mínima; rastreamento de linhagem é futuro.
+
+A posição do filhote usa ângulo do RNG próprio e distância de 16 pixels,
+centralizada em config como 2 raios +2. Cada coordenada é limitada ao intervalo
+válido do centro; nas bordas os círculos podem se sobrepor, sem colisão entre
+criaturas. O ângulo também define a direção inicial; intervalo de exploração
+é sorteado pelo mesmo RNG. IDs e contadores não consomem números aleatórios.
+
+A iteração mantém listas separadas de sobreviventes e recém-nascidos. Cada
+progenitor gera no máximo um filhote por passo. World aplica a nova população
+após percorrer a lista anterior; filhotes não se movem, comem, envelhecem ou
+reproduzem no passo de nascimento. Isso evita atualização recursiva. Mortos
+no início ou ao esgotar energia são removidos e contados uma única vez.
+Births_total e deaths_total ficam disponíveis no domínio, sem HUD ou Metrics.
+
+O tempo fixo continua na aplicação. Testes das três cadências incluem nascimento,
+idade, energia e contadores; mesma seed e mesma sequência de passos repetem
+estado, alimento, IDs e eventos. Extinção não recria população automaticamente.
+
 ## Componentes por sprint
 
 | Componente | Responsabilidade | Introdução prevista |
 | --- | --- | --- |
-| `Creature` | Estado, posição e movimento, sem Pygame | Implementado na Sprint 1 |
-| `World` | População e interações de sobrevivência | Sprint 1; sobrevivência na Sprint 2 |
+| `Creature` | Estado, movimento, sobrevivência e ciclo básico | Sprint 1; sobrevivência na 2; ciclo na 3 |
+| `World` | População, interações e totais de eventos | Sprint 1; sobrevivência na 2; reprodução na 3 |
 | `Renderer` | Desenho do mundo, separado das regras | Implementado na Sprint 1; HUD futuro |
 | `Food` | Estado de alimento; consumo resolvido por World | Implementado na Sprint 2 |
 | `Genetics` | Herança, mutação e limites | Sprint 4 |
 | `Metrics` | Agregações, amostragem e CSV | Sprint 5 |
 
 O passo fixo, o gerador próprio e o domínio independente de Pygame já existem.
-Mortes já são aplicadas fora da iteração da população. Nascimentos aguardam
-a Sprint 3 autorizada; seguirão o mesmo princípio. As regras são testáveis sem Pygame.
+Nascimentos e mortes são aplicados fora da iteração da população. Ambos
+estão implementados na Sprint 3. As regras são testáveis sem Pygame.
 
 ## Fora do escopo atual
 
-Reprodução, genes herdáveis, indicadores, CSV, pausa, reinício e controles
-de sementes aguardam suas sprints. A Sprint 3 não está autorizada. Não criar
+Mutações, estrutura genética, indicadores, CSV, pausa, reinício e controles
+de sementes aguardam suas sprints. A Sprint 4 não está autorizada. Não criar
 arquivos vazios para esses componentes. Evolução e aprendizado individual
 são conceitos distintos; redes neurais pertencem ao backlog pós-1.0.

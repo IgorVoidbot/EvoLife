@@ -1,6 +1,6 @@
 # Quadro de tarefas
 
-Escopo autorizado: Sprint 2. Sprint 3 não autorizada. Manter uma tarefa
+Escopo autorizado: Sprint 3. Sprint 4 não autorizada. Manter uma tarefa
 de implementação em andamento por vez. Atualizar este arquivo ao concluir
 cada tarefa; evidências detalhadas ficam em `PROJECT_STATE.md`.
 
@@ -34,7 +34,7 @@ cada tarefa; evidências detalhadas ficam em `PROJECT_STATE.md`.
 | S1-07 | Atualizar documentação e memória | Decisões, evidências, limites e entrega para revisão | Concluída |
 | S1-08 | Registro e integração da Sprint 1 | Commit 0f32887; PR #1 integrado à main, conforme usuário | Concluída pelo usuário |
 
-## Sprint 2 — entrega técnica concluída para revisão
+## Sprint 2 — concluída, aprovada e integrada pelo PR #3
 
 | ID | Tarefa | Critério / evidência | Status |
 | --- | --- | --- | --- |
@@ -45,8 +45,22 @@ cada tarefa; evidências detalhadas ficam em `PROJECT_STATE.md`.
 | S2-05 | Remover mortos e repor comida | Remoção segura; 1 unidade/s até 125; extinção funcional | Concluída |
 | S2-06 | Validar regras e regressão; demonstrar alimentação | 71 testes aprovados; GIF de 6 s fora da tela | Concluída |
 | S2-07 | Revisar código e entregar documentação | Revisão, README, arquitetura, evidências e limites registrados | Concluída |
+| S2-08 | Aprovar e integrar a Sprint 2 | PR #3, merge 3b75b6e; validação manual Ubuntu sem erros | Concluída pelo usuário |
 
-Não iniciar Sprint 3 nem realizar commits automaticamente.
+## Sprint 3 — entrega técnica concluída para revisão
+
+| ID | Tarefa | Critério / evidência | Status |
+| --- | --- | --- | --- |
+| S3-01 | Preparar estado e conferir develop/main | Base 3b75b6e, origin/main igual, 71 testes aprovados | Concluída |
+| S3-02 | Adicionar idade, cooldown, ID e geração básicos | Idade por dt, cooldown 10 s, IDs não reutilizados | Concluída |
+| S3-03 | Implementar nascimento com transferência | Idade ≥10, energia ≥110, cooldown zero; transferência 45 | Concluída |
+| S3-04 | Aplicar população e contadores com segurança | Filhotes aguardam próximo passo; mortes contadas uma vez | Concluída |
+| S3-05 | Testar reprodução, determinismo e regressões | 103 testes aprovados; regras, cadências, limites e extinção | Concluída |
+| S3-06 | Demonstrar nascimentos pelas regras reais | GIF de 15 s; seed 42, 60 s lógicos, 28 nascimentos e 5 mortes | Concluída |
+| S3-07 | Revisar código, documentar e entregar | Revisão estática, verificações e memória atualizadas | Concluída |
+| S3-08 | Executar aplicação manualmente no Ubuntu | Usuário relatou execução do EvoLife sem identificar erros; 103 testes automatizados anteriores preservados | Concluída pelo usuário |
+
+Não iniciar Sprint 4 nem realizar commits automaticamente.
 
 As demais entregas estão em `SPRINTS.md` e no PRD. Aprendizado desta fundação:
 a distribuição instalada pode mudar por compatibilidade sem alterar o nome

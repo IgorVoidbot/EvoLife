@@ -13,6 +13,8 @@ from evolife.config import (
     INITIAL_VISION,
     MAX_ENERGY,
     MAX_WANDER_INTERVAL,
+    MIN_REPRODUCTION_AGE,
+    MIN_REPRODUCTION_ENERGY,
     MIN_WANDER_INTERVAL,
     SPEED_ENERGY_COST,
     VISION_ENERGY_COST,
@@ -49,6 +51,23 @@ class Creature:
     vision: float = INITIAL_VISION
     efficiency: float = INITIAL_EFFICIENCY
     wander_remaining: float = 0.0
+    age_seconds: float = 0.0
+    reproduction_cooldown: float = 0.0
+    id: int | None = None
+    generation: int = 0
+
+    def advance_lifecycle(self, dt: float) -> None:
+        """Avance idade e espera de reprodução pelo tempo lógico."""
+        self.age_seconds += dt
+        self.reproduction_cooldown = max(0.0, self.reproduction_cooldown - dt)
+
+    def can_reproduce(self) -> bool:
+        """Verifique os três requisitos de reprodução assexuada do PRD."""
+        return (
+            self.age_seconds >= MIN_REPRODUCTION_AGE
+            and self.energy >= MIN_REPRODUCTION_ENERGY
+            and self.reproduction_cooldown <= 0.0
+        )
 
     def steer(self, dt: float, foods: list[Food], rng: random.Random) -> None:
         """Persiga o alimento visível mais próximo ou mude a direção ao vagar."""
