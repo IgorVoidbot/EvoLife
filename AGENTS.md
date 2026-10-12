@@ -76,3 +76,13 @@ python -m pip check
 No Linux, ative com `source .venv/bin/activate`; no PowerShell,
 com `.venv\Scripts\Activate.ps1`. Os testes configuram SDL `dummy` sem
 abrir uma janela no desktop. A avaliação visual usa `python main.py`.
+
+## Fluxo de desenvolvimento Git
+
+- develop é a branch de desenvolvimento.
+- main contém somente versões aprovadas.
+- Implementações devem ocorrer na develop.
+- Nunca fazer merge na main sem aprovação do usuário.
+- Cada sprint deve ter testes e revisão de código.
+- Atualizar PROJECT_STATE.md antes de encerrar.
+- Codex CLI e OpenCode CLI devem respeitar essas regras.
