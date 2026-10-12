@@ -2,12 +2,12 @@
 
 Fonte: `EvoLife_PRD_Roadmap.md`, versão 1.0. O documento original permanece
 inalterado. A cadência sugerida é semanal; os critérios de aceite orientam
-a conclusão, sem impor datas. Somente a Sprint 0 está autorizada nesta sessão.
+a conclusão, sem impor datas. Somente a Sprint 1 está autorizada nesta sessão.
 
 | Sprint | Esforço do PRD | Entrega / portão de aceite | Status |
 | --- | --- | --- | --- |
-| 0 | 2–3 h | Repositório, venv, dependências, README; janela 800 × 600 abre, redesenha e fecha | Entrega técnica concluída; commit suspenso |
-| 1 | 4–6 h | 10 criaturas se movem por tempo decorrido; bordas verificadas | Não iniciada; aguarda autorização |
+| 0 | 2–3 h | Repositório, venv, dependências, README; janela 800 × 600 abre, redesenha e fecha | Concluída e registrada pelo usuário em 73d5e04 |
+| 1 | 4–6 h | 10 criaturas se movem por tempo decorrido; bordas verificadas | Entrega técnica concluída; aguarda revisão do usuário |
 | 2 | 6–8 h | Comida, busca, consumo, energia, morte e reposição | Não iniciada |
 | 3 | 5–7 h | Idade, cooldown, reprodução e transferência de energia | Não iniciada |
 | 4 | 6–8 h | Genes herdáveis, mutação limitada e gerações; MVP 0.1 | Não iniciada |
@@ -17,7 +17,7 @@ a conclusão, sem impor datas. Somente a Sprint 0 está autorizada nesta sessão
 | 8 | 5–9 h | Predadores e ambientes, após a versão 1.0 | Backlog opcional |
 | 9 | 8–15+ h | Controlador neural com hipótese e comparação, após 1.0 | Backlog opcional |
 
-## Sprint 0 — contrato desta sessão
+## Sprint 0 — fundação concluída
 
 - Reutilizar o Git existente, sem reinicializar ou fazer commits.
 - Preservar Python 3.14 e `.venv`; instalar pygame-ce 2.5.8 e pytest apenas
@@ -26,8 +26,8 @@ a conclusão, sem impor datas. Somente a Sprint 0 está autorizada nesta sessão
 - Criar README e .gitignore, instruções para ambos os CLIs e documentação.
 - Registrar testes e dificuldades na memória e atualizar o quadro de tarefas.
 
-A tarefa `chore: iniciar projeto EvoLife` do PRD fica suspensa até autorização
-explícita. O commit não é um pré-requisito para verificar o código nesta sessão.
+A Sprint 0 foi registrada pelo usuário em `73d5e04`. Não fazer novos commits
+sem autorização explícita.
 A demonstração prevista no PRD é um vídeo de 5 segundos; sua produção e a
 avaliação visual devem aparecer separadas dos resultados automatizados.
 
@@ -36,8 +36,17 @@ automatizada com janela real X11 (374 quadros em 6,29 s e encerramento sem erro)
 e [vídeo de 5 segundos](media/sprint0.mp4). Não houve avaliação manual por uma
 pessoa; os resultados e limites estão registrados na memória compartilhada.
 
-## Próximo portão
+## Sprint 1 — plano executado
 
-Somente após autorização para a Sprint 1, começar com uma `Creature`, movimento
+Começar com uma `Creature`, movimento
 por `dt` e teste de `(100, 100)` para `(120, 100)` em 0,5 s a 40 pixels/s.
-Depois tratar bordas e gerar as outras nove criaturas. Não iniciar agora.
+Depois tratar bordas e gerar as outras nove criaturas. Separar domínio,
+população e desenho; usar passos fixos de 1/60 s. Não implementar metabolismo,
+comida ou controles novos. Entregar GIF de 15 segundos e testes; interromper
+ao concluir e aguardar revisão. Sprint 2 não autorizada.
+
+**Evidências:** 33 testes aprovados (sete da Sprint 0), incluindo movimento,
+reflexão e cadências de renderização; verificação gráfica X11 com dez criaturas
+e encerramento sem erro; [GIF de 15 segundos](media/sprint1.gif).
+A Sprint 1 foi entregue para revisão, sem commit automático. A Sprint 2
+depende de nova autorização e não deve ser iniciada pelo próximo agente.
