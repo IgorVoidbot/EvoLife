@@ -14,12 +14,15 @@ de plugins, configurações privadas ou memória exclusiva de um CLI.
 
 ## Limites vigentes
 
-- Trabalhe somente na Sprint 3, oficialmente autorizada pelo usuário.
+- Trabalhe somente na Sprint 4, oficialmente autorizada pelo usuário.
   A Sprint 1 está concluída, aprovada e integrada à main pelo PR #1.
   A Sprint 2 está concluída, revisada, aprovada e integrada à main pelo PR #3
-  (merge 3b75b6e). A entrega técnica da Sprint 3 está concluída e aguarda
-  revisão do usuário. Desenvolvimento interrompido, sem commit automático.
-  Sprint 4 não autorizada.
+  (merge 3b75b6e). A Sprint 3 foi concluída, aprovada na revisão técnica e
+  integrada à main pelo PR #4 (merge 96ab068). Sprint 4 concluída tecnicamente,
+  com revisão estática externa sem problemas bloqueantes e aplicação/suíte
+  validadas pelo usuário no Ubuntu, sem erros relatados. O usuário realizou
+  commit f90c98f e push para develop; integração à main não informada.
+  Desenvolvimento interrompido. Sprint 5 não autorizada. Sem commit automático.
 - Preserve arquivos existentes e mudanças do usuário. Nunca altere o PRD.
 - Não faça commits, tags, pushes ou publicação sem autorização explícita.
   A Sprint 0 já foi registrada pelo usuário; novos commits continuam proibidos
@@ -63,8 +66,9 @@ o estado antes de escrever para preservar os registros de outras sessões.
   Renderer pertencem à Sprint 1; comida, busca, consumo, metabolismo, morte
   e reposição pertencem à Sprint 2. Idade, cooldown, reprodução assexuada,
   IDs, geração básica e contadores de nascimentos/mortes pertencem à Sprint 3.
-  Copie as características do progenitor, sem mutações. Genética com mutação,
-  métricas, HUD e controles novos aguardam suas sprints.
+  Genes, herança com mutações limitadas e parent_id pertencem à Sprint 4.
+  Preserve as regras energéticas e de reprodução. Métricas, HUD, CSV e
+  controles novos aguardam suas sprints; não iniciar a Sprint 5.
 - Valide o comportamento afetado com testes úteis e registre seus limites.
 - Documente em português; use nomes de código em inglês.
 

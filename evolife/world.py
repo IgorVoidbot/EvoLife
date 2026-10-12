@@ -15,6 +15,8 @@ from evolife.config import (
     MAX_WANDER_INTERVAL,
     MIN_SPEED,
     MIN_WANDER_INTERVAL,
+    MUTATION_PROBABILITY,
+    MUTATION_STDDEV_FRACTION,
     OFFSPRING_DISTANCE,
     REPRODUCTION_COOLDOWN,
     REPRODUCTION_ENERGY_TRANSFER,
@@ -23,6 +25,7 @@ from evolife.config import (
 )
 from evolife.creature import Creature
 from evolife.food import Food
+from evolife.genetics import MutationSettings
 
 
 class World:
@@ -31,11 +34,17 @@ class World:
         width: float = WINDOW_WIDTH,
         height: float = WINDOW_HEIGHT,
         seed: int | None = DEFAULT_SEED,
+        *,
+        mutation_probability: float = MUTATION_PROBABILITY,
+        mutation_stddev_fraction: float = MUTATION_STDDEV_FRACTION,
     ) -> None:
         if width <= 2 * CREATURE_RADIUS or height <= 2 * CREATURE_RADIUS:
             raise ValueError("o mundo deve comportar o diâmetro da criatura")
         self.width = width
         self.height = height
+        self.mutation_settings = MutationSettings(
+            mutation_probability, mutation_stddev_fraction
+        )
         self.random = random.Random(seed)
         self._next_creature_id = 0
         self.births_total = 0
@@ -75,15 +84,14 @@ class World:
                 max(CREATURE_RADIUS, parent.y + math.sin(angle) * OFFSPRING_DISTANCE),
             ),
             direction=angle,
-            speed=parent.speed,
+            genes=parent.genes.inherit(self.random, self.mutation_settings),
             energy=REPRODUCTION_ENERGY_TRANSFER,
-            vision=parent.vision,
-            efficiency=parent.efficiency,
             wander_remaining=self.random.uniform(
                 MIN_WANDER_INTERVAL, MAX_WANDER_INTERVAL
             ),
             id=self._allocate_id(),
             generation=parent.generation + 1,
+            parent_id=parent.id,
         )
         parent.energy -= REPRODUCTION_ENERGY_TRANSFER
         parent.reproduction_cooldown = REPRODUCTION_COOLDOWN

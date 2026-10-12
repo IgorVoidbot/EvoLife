@@ -11,7 +11,7 @@ from evolife.world import World
 
 
 def prepared_world(**parameters):
-    world = World(seed=42)
+    world = World(seed=42, mutation_probability=0)
     state = dict(x=400, y=300, direction=0, speed=40, energy=120,
                  age_seconds=20, wander_remaining=3)
     state.update(parameters)

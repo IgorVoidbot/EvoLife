@@ -2,16 +2,18 @@
 
 Fonte: `EvoLife_PRD_Roadmap.md`, versão 1.0. O documento original permanece
 inalterado. A cadência sugerida é semanal; os critérios de aceite orientam
-a conclusão, sem impor datas. Sprint 3 autorizada; Sprint 4 não autorizada.
+a conclusão, sem impor datas. Sprint 4 concluída tecnicamente, revisada
+externamente e validada pelo usuário no Ubuntu; desenvolvimento interrompido.
+Sprint 5 não autorizada.
 
 | Sprint | Esforço do PRD | Entrega / portão de aceite | Status |
 | --- | --- | --- | --- |
 | 0 | 2–3 h | Repositório, venv, dependências, README; janela 800 × 600 abre, redesenha e fecha | Concluída e registrada pelo usuário em 73d5e04 |
 | 1 | 4–6 h | 10 criaturas se movem por tempo decorrido; bordas verificadas | Concluída, aprovada e integrada à main pelo PR #1 |
 | 2 | 6–8 h | Comida, busca, consumo, energia, morte e reposição | Concluída, aprovada e integrada pelo PR #3 (3b75b6e) |
-| 3 | 5–7 h | Idade, cooldown, reprodução e transferência de energia | Entrega técnica concluída; aguarda revisão |
-| 4 | 6–8 h | Genes herdáveis, mutação limitada e gerações; MVP 0.1 | Não iniciada e não autorizada |
-| 5 | 4–6 h | Indicadores, médias, amostras e exportação CSV | Não iniciada |
+| 3 | 5–7 h | Idade, cooldown, reprodução e transferência de energia | Concluída, aprovada e integrada pelo PR #4 (96ab068) |
+| 4 | 6–8 h | Genes herdáveis, mutação limitada e gerações; MVP 0.1 | Concluída tecnicamente, revisada e validada no Ubuntu; commit/push para develop pelo usuário |
+| 5 | 4–6 h | Indicadores, médias, amostras e exportação CSV | Não iniciada e não autorizada |
 | 6 | 3–5 h | Pausa, reinício, passo único e repetibilidade por semente | Não iniciada |
 | 7 | 5–8 h | Testes, estabilidade por 15 minutos, mídia e release 1.0 | Não iniciada |
 | 8 | 5–9 h | Predadores e ambientes, após a versão 1.0 | Backlog opcional |
@@ -72,7 +74,7 @@ Registro anterior preservado: Sprint 2 aprovada na revisão de código,
 com pequeno ajuste documental recomendado; referências de estado corrigidas
 na abertura da Sprint 3.
 
-## Sprint 3 — entrega técnica concluída para revisão
+## Sprint 3 — concluída, aprovada e integrada
 
 Implementar idade, cooldown de 10 s e reprodução assexuada: idade ≥10 s,
 energia ≥110 e cooldown encerrado. Transferir 45 para o filhote; copiar
@@ -80,7 +82,7 @@ velocidade, visão e eficiência; novo ID e geração do progenitor +1. Posicion
 próximo e dentro das bordas, usando RNG próprio. Aplicar nascimentos e mortes
 fora da iteração e registrar totais. Validar bloqueios, conservação, limites,
 IDs, determinismo e extinção; demonstrar nascimento com parâmetros registrados.
-Interromper para revisão. Sem mutações; Sprint 4 não autorizada.
+Plano original preservado: entrega sem mutações, seguida de revisão.
 
 **Evidências:** 103 testes aprovados com SDL dummy; idade, cooldown, bloqueios,
 conservação no nascimento, limites, IDs, eventos, extinção e repetibilidade
@@ -91,4 +93,41 @@ renderizada fora da tela, com legendas exclusivas da demonstração. População
 inicial 10, máxima 34 e final 33. Posteriormente, o usuário executou manualmente
 o EvoLife da Sprint 3 no Ubuntu e não identificou erros. Relato separado dos
 103 testes automatizados anteriores, cujos resultados foram preservados.
-Desenvolvimento interrompido; aguardar revisão antes de commit ou integração.
+Sprint 3 aprovada na revisão técnica e integrada à main pelo PR #4,
+merge 96ab068, conforme usuário e Git local. Sprint 4 autorizada posteriormente.
+
+## Sprint 4 — concluída tecnicamente, revisada e validada no Ubuntu
+
+Agrupar speed, vision e efficiency em genes validados; herdar no nascimento
+com 12% de mutação independente por gene e normal centrada em zero com
+desvio de 8% da amplitude. Limitar aos intervalos do PRD, usando RNG próprio.
+Registrar parent_id e preservar geração, IDs, energia e regras da Sprint 3.
+Testar herança, limites, determinismo e regressões. Demonstrar duas gerações
+descendentes com parâmetros e genes inspecionáveis. Encerrar para revisão,
+sem commit, push, PR ou início da Sprint 5.
+
+**Evidências da entrega técnica pelo Codex:** 192 testes aprovados com SDL
+dummy (103 casos anteriores e 89 genéticos); revisão estática, compileall,
+pip check e hash do PRD aprovados.
+[Relatório genético](GENETICS_DEMO.md) reproduzido identicamente com e sem
+renderização: seed 42, parâmetros oficiais padrão, 60 s em passos de 1/60 s,
+26 nascimentos, 6 mortes, população máxima 34 e final 30, geração máxima 3.
+Linhagem 8 → 18 → 25 → 35 demonstra herança e mudanças em speed/efficiency.
+[GIF de 15 segundos](media/sprint4.gif), 800 ×600, 225 quadros a 15 FPS,
+renderizado fora da tela a 4x, com legendas exclusivas da mídia.
+Registro da entrega original: critérios técnicos do MVP Evolutivo 0.1
+atendidos; revisão/aprovação e execução manual ainda pendentes naquele momento.
+Sem evidência de adaptação decorrente desta demonstração isolada.
+
+**Validação posterior, conforme relato do usuário:** após o commit e push
+para develop, a revisão estática externa não identificou problemas bloqueantes.
+O usuário executou a aplicação e a suíte de testes no Ubuntu, sem identificar
+erros. Este relato é separado dos 192 testes executados pelo Codex; não foi
+informado novo total, duração ou saída detalhada. Não houve nova execução da
+suíte pelo agente nesta atualização documental. A validação manual no Ubuntu
+fica registrada; validação Windows permanece pendente.
+
+Commit/push realizados pelo usuário: f90c98f, confirmado em develop e
+origin/develop. main permanece em 96ab068; integração da Sprint 4 à main
+não informada. Desenvolvimento interrompido; sem novos commits ou pushes
+pelo agente e sem início da Sprint 5.

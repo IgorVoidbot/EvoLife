@@ -1,4 +1,4 @@
-"""Parâmetros da janela, do movimento e da sobrevivência."""
+"""Parâmetros da janela, sobrevivência, reprodução e genética."""
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
@@ -17,6 +17,12 @@ DEFAULT_SEED = 42
 
 INITIAL_VISION = 100.0
 INITIAL_EFFICIENCY = 1.0
+MIN_VISION = 35.0
+MAX_VISION = 160.0
+MIN_EFFICIENCY = 0.8
+MAX_EFFICIENCY = 1.2
+MUTATION_PROBABILITY = 0.12
+MUTATION_STDDEV_FRACTION = 0.08
 MAX_ENERGY = 130.0
 BASE_ENERGY_COST = 0.55
 SPEED_ENERGY_COST = 0.012

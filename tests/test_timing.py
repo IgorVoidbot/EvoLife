@@ -17,7 +17,7 @@ from evolife.world import World
 )
 @pytest.mark.parametrize("initial_age", [0, 9.5], ids=["sem-nascimento", "com-nascimento"])
 def test_fixed_time_updates_are_independent_of_rendering(monkeypatch, frame_times, initial_age):
-    world = World()
+    world = World(mutation_probability=0)
     world.foods.clear()
     world.creatures = [Creature(100, 100, 0, 40, energy=120,
                                 wander_remaining=3, age_seconds=initial_age)]

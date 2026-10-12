@@ -79,15 +79,17 @@ def test_initial_wandering_intervals_follow_prd():
 
 
 @pytest.mark.parametrize("distance, eaten", [(9.9, True), (10, True), (10.1, False)])
-def test_food_collision_uses_both_radii(distance, eaten):
+def test_food_collision_uses_both_radii(distance, eaten, monkeypatch):
     world = empty_world()
-    creature = Creature(100, 100, math.pi, 40, energy=50, vision=0, wander_remaining=2)
+    creature = Creature(100, 100, math.pi, 40, energy=50, vision=35, wander_remaining=2)
+    # Isole o contato da perseguição sem usar visão fora dos limites genéticos.
+    monkeypatch.setattr(creature, "steer", lambda *args: None)
     food = Food(100 + distance, 100)
     world.creatures = [creature]
     world.foods = [food]
     world.update(FIXED_DT)
     assert (food not in world.foods) == eaten
-    assert creature.energy == pytest.approx(50 + (45 if eaten else 0) - 1.03 / 60)
+    assert creature.energy == pytest.approx(50 + (45 if eaten else 0) - 1.135 / 60)
 
 
 def test_food_at_initial_position_is_consumed_before_moving_away():
