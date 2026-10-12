@@ -52,7 +52,7 @@ def test_domain_imports_without_pygame():
         [
             sys.executable,
             "-c",
-            "import evolife.creature, evolife.world, evolife.food, sys; "
+            "import evolife.creature, evolife.world, evolife.food, evolife.genetics, sys; "
             "assert 'pygame' not in sys.modules",
         ],
         capture_output=True,

@@ -1,6 +1,6 @@
 """Estado e movimento da criatura, sem dependência de Pygame."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import math
 import random
 
@@ -22,6 +22,7 @@ from evolife.config import (
     WINDOW_WIDTH,
 )
 from evolife.food import Food
+from evolife.genetics import Genes
 
 
 def _reflect_axis(
@@ -41,20 +42,95 @@ def _reflect_axis(
     return position, velocity
 
 
-@dataclass
+@dataclass(init=False)
 class Creature:
     x: float
     y: float
     direction: float
-    speed: float
+    _genes: Genes
     energy: float = INITIAL_ENERGY
-    vision: float = INITIAL_VISION
-    efficiency: float = INITIAL_EFFICIENCY
     wander_remaining: float = 0.0
     age_seconds: float = 0.0
     reproduction_cooldown: float = 0.0
     id: int | None = None
     generation: int = 0
+    parent_id: int | None = None
+
+    def __init__(
+        self,
+        x: float,
+        y: float,
+        direction: float,
+        speed: float | None = None,
+        energy: float = INITIAL_ENERGY,
+        vision: float | None = None,
+        efficiency: float | None = None,
+        wander_remaining: float = 0.0,
+        age_seconds: float = 0.0,
+        reproduction_cooldown: float = 0.0,
+        id: int | None = None,
+        generation: int = 0,
+        parent_id: int | None = None,
+        *,
+        genes: Genes | None = None,
+    ) -> None:
+        """Aceite a assinatura anterior ou genes, sem duplicar os atributos."""
+        if genes is not None:
+            if any(value is not None for value in (speed, vision, efficiency)):
+                raise ValueError("use genes ou speed/vision/efficiency, separadamente")
+            self.genes = genes
+        else:
+            if speed is None:
+                raise ValueError("informe speed ou genes")
+            self.genes = Genes(
+                speed,
+                INITIAL_VISION if vision is None else vision,
+                INITIAL_EFFICIENCY if efficiency is None else efficiency,
+            )
+        self.x = x
+        self.y = y
+        self.direction = direction
+        self.energy = energy
+        self.wander_remaining = wander_remaining
+        self.age_seconds = age_seconds
+        self.reproduction_cooldown = reproduction_cooldown
+        self.id = id
+        self.generation = generation
+        self.parent_id = parent_id
+
+    @property
+    def genes(self) -> Genes:
+        return self._genes
+
+    @genes.setter
+    def genes(self, value: Genes) -> None:
+        if not isinstance(value, Genes):
+            raise TypeError("genes deve ser uma instância de Genes")
+        self._genes = value
+
+    @property
+    def speed(self) -> float:
+        return self.genes.speed
+
+    @speed.setter
+    def speed(self, value: float) -> None:
+        self.genes = replace(self.genes, speed=value)
+
+    @property
+    def vision(self) -> float:
+        return self.genes.vision
+
+    @vision.setter
+    def vision(self, value: float) -> None:
+        self.genes = replace(self.genes, vision=value)
+
+    @property
+    def efficiency(self) -> float:
+        return self.genes.efficiency
+
+    @efficiency.setter
+    def efficiency(self, value: float) -> None:
+        self.genes = replace(self.genes, efficiency=value)
 
     def advance_lifecycle(self, dt: float) -> None:
         """Avance idade e espera de reprodução pelo tempo lógico."""

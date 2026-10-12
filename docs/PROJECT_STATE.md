@@ -1,6 +1,6 @@
 # Memória compartilhada — EvoLife
 
-Última atualização: 12/10/2026, validação manual da Sprint 3 relatada pelo usuário.
+Última atualização: 12/10/2026, entrega técnica da Sprint 4 para revisão.
 
 ## Protocolo de continuidade
 
@@ -11,8 +11,11 @@ relevantes. Resultados abaixo representam evidências executadas, não intençõ
 
 ## Estado e autorização
 
-- Sprint atual: **3**, **entrega técnica concluída e aguardando revisão**.
-  Desenvolvimento interrompido; sem autorização para commit ou integração.
+- Sprint atual: **4**, **entrega técnica concluída e aguardando revisão e
+  aprovação do usuário**. Desenvolvimento interrompido; sem autorização para
+  commit, push, PR ou integração.
+- Sprint 3 concluída, aprovada na revisão técnica e integrada à main pelo
+  **PR #4**, merge `96ab068`, confirmado pelo usuário e pelo Git local.
 - Usuário executou manualmente o EvoLife da Sprint 3 no Ubuntu e não
   identificou erros; relato registrado ao final, separado dos 103 testes
   automatizados já aprovados.
@@ -23,8 +26,8 @@ relevantes. Resultados abaixo representam evidências executadas, não intençõ
 - Sprint 1 concluída, aprovada e integrada à main; merge do **PR #1**
   confirmado pelo usuário nesta sessão.
 - Sprint 0 concluída e registrada pelo usuário em `73d5e04`.
-- Sprint 4: **não autorizada**. Encerrar ao concluir a Sprint 3 e aguardar
-  revisão. Novos commits não autorizados.
+- Sprint 5: **não autorizada**. Encerrar ao concluir a Sprint 4 e aguardar
+  revisão técnica e aprovação. Commits, pushes e PRs não autorizados.
 - PRD original: lido e preservado; não editar.
 - Commits, tags, pushes e publicação: não autorizados.
 - Preservar Python global 3.14 e `.venv`; não usar sudo, instalar SDL ou
@@ -33,6 +36,16 @@ relevantes. Resultados abaixo representam evidências executadas, não intençõ
   no ambiente. Instalar exclusivamente pacotes pré-compilados.
 
 ## Implementação atual
+
+Sprint 4 implementada: Genes imutáveis e validados, herança com 12% de mutação
+independente por gene, normal de desvio 8% da amplitude, limitação ao PRD,
+parent_id e geração. Creature mantém propriedades compatíveis; World usa seu
+RNG e preserva as regras de energia, reprodução e sobrevivência. 192 testes
+aprovados; demonstração com gerações 0–3. Critérios técnicos do MVP Evolutivo
+0.1 atendidos, pendente aprovação do usuário. Sem HUD, CSV, controles novos
+ou dependências adicionais. Base histórica abaixo; evidências novas ao final.
+
+### Base histórica da Sprint 3
 
 Sprint 3 implementada: idade e cooldown por tempo lógico, reprodução assexuada
 com transferência de energia, IDs únicos, geração básica, características
@@ -533,3 +546,146 @@ S3-08 concluída pelo usuário; relato registrado na memória, no quadro de tare
 no plano de sprints e no README. Somente esses documentos foram alterados nesta
 tarefa, preservando código e mudanças preexistentes. Sem commits ou push.
 Desenvolvimento continua interrompido para revisão; Sprint 4 não autorizada.
+
+## Abertura da Sprint 4 — 12/10/2026
+
+- Autorização explícita do usuário; Sprint 3 revisada, aprovada e integrada
+  pelo PR #4, merge 96ab068. Sprint 5 não autorizada.
+- Na primeira tentativa, main local estava em 73d5e04, nove commits atrás;
+  trabalho interrompido sem editar arquivos. Usuário resolveu por fast-forward.
+- Retomada: branch develop, árvore limpa, main/develop/origin/main/origin/develop
+  iguais a 96ab068; comparação main...develop: 0 / 0. Sem fetch ou alteração
+  de referências pelo agente.
+- Base: `.venv/bin/python -m pytest -q`: **103 passed in 3.88s**, saída 0.
+- PRD, código, documentos e testes consultados. Sem instalação ou agentes
+  auxiliares. Plano: genes imutáveis e propriedades compatíveis em Creature;
+  parâmetros validados no World, herança pelo seu RNG e parent_id; testes
+  controlados sem estimar probabilidades; demonstração e revisão final.
+
+## Entrega da Sprint 4 — S4-02 a S4-06
+
+### Implementação e decisões
+
+- RF-08: `evolife/genetics.py` contém Genes e MutationSettings, dataclasses
+  imutáveis. Apenas speed, vision, efficiency; igualdade por valor. Genes
+  rejeita booleanos, não numéricos, não finitos e valores fora das faixas.
+- Limites inclusivos em config: speed 25–90, vision 35–160, efficiency 0,8–1,2.
+  Defaults de mutação: probabilidade 0,12 e fração de desvio 0,08. Desvios
+  efetivos 5,2 / 10 / 0,032; normal centrada em zero, sem direção planejada.
+- Genes.inherit recebe o RNG do World. Ordem fixa speed/vision/efficiency,
+  um sorteio independente por gene em cada nascimento; gauss apenas quando
+  random() < probability; limitar o resultado à faixa. Mudanças podem ser
+  positivas, negativas ou nulas (inclusive pelo clamp). Progenitor preservado.
+- World aceita mutation_probability e mutation_stddev_fraction nomeados;
+  valida probabilidade finita 0–1 e desvio finito não negativo. Sem RNG global.
+  Mesmo com probabilidade zero são consumidos três sorteios, sem gauss.
+  Mesma seed/configuração/passos repete esta versão; trajetórias históricas
+  da Sprint 3 diferem porque agora há sorteios adicionais.
+- Creature armazena somente `_genes`, exposto por genes. A assinatura anterior
+  é preservada, inclusive argumentos posicionais; alternativamente aceita
+  genes=Genes(...). Misturar genes e os três atributos é rejeitado. Propriedades
+  speed/vision/efficiency substituem a estrutura por cópia validada ao escrever,
+  sem alterar outras criaturas. Construtor explícito evita duplicar atributos.
+- Filhotes recebem novo ID, parent_id e geração +1. Valores iniciais parent_id
+  None; IDs crescentes não reutilizados. Relação permanece mesmo após morte
+  do progenitor, sem guardar mortos na aplicação. Demo arquiva snapshots locais.
+- Idade mínima 10, energia mínima 110 após metabolismo, cooldown 10,
+  transferência 45, filhote energia 45, posição limitada e ações no passo
+  seguinte foram preservados. Fórmula `(0.55 + 0.012 * speed + 0.003 * vision)
+  * efficiency` inalterada. Não há seleção artificial.
+- main.py, Renderer, Food, requirements e mídias anteriores preservados.
+  Domínio continua independente de Pygame; aplicação continua em 1/60 s.
+
+### Testes, revisão e verificações executadas
+
+| Comando / verificação | Resultado |
+| --- | --- |
+| Suíte base `.venv/bin/python -m pytest -q` | 103 passed in 3.88s, saída 0 |
+| Primeira integração com genética | 191 passed in 6.96s, saída 0 |
+| Suíte final `.venv/bin/python -m pytest -q` | **192 passed in 6.85s**, saída 0; SDL dummy |
+| `.venv/bin/python -m compileall -q main.py evolife tests scripts` | Saída 0, sem erros |
+| `.venv/bin/python -m pip --no-cache-dir check` | No broken requirements found., saída 0 |
+| Python global e .venv | Ambos Python 3.14.4, preservados |
+| `sha256sum EvoLife_PRD_Roadmap.md` | 740fabf9754d5fa4081a8229607a3ced6bd27c3c333440062a491904a10f4802, idêntico |
+| `git diff --check` | Saída 0, sem avisos |
+| Auditoria AST, whitespace de textos novos e links locais | Aprovada, saída 0 |
+| Relatório com e sem mídia | Texto reproduzido identicamente, saída 0 |
+| ffprobe do GIF final | GIF 800 ×600, 225 quadros, 15,000 s, 1.036.758 bytes |
+| Git | develop e main continuam em 96ab068; 13 arquivos modificados e cinco novos |
+
+Os 103 casos anteriores foram preservados; 89 casos novos em test_genetics.
+Cobertura nova: cópia sem mutação, oito combinações de decisões individuais,
+limiar configurável, sigmas por amplitude, sinais positivo/negativo/zero,
+limites inclusivos e mutações próximas/dentro das bordas, validação de valores
+inválidos, propriedades compatíveis, isolamento do progenitor, parent_id,
+geração, conservação de energia, atualização diferida, efeitos no movimento,
+percepção/metabolismo, duas gerações descendentes, determinismo e extinção.
+Não há testes que dependam de estimar frequência por amostragem aleatória.
+
+Adaptações necessárias na regressão: cenários de cópia/metabolismo de filhotes
+em test_reproduction e cadências em test_timing desativam mutação explicitamente.
+O teste de contato em test_food antes usava vision=0, inválido no PRD;
+agora usa 35 e isola steer para continuar verificando colisão, movimento e
+energia. O teste de importação sem Pygame inclui genetics. Nenhum caso removido.
+Sem falhas funcionais nas execuções da Sprint 4.
+
+Revisão estática do código e diff realizada sem agentes auxiliares: fonte
+única dos genes, limites e rejeição antes de substituir estado, imutabilidade,
+sorteios por gene sem favorecimento, uso do RNG próprio, ordem do ciclo,
+transferência, cooldown, identidade/linhagem, coleção percorrida preservada,
+filhotes diferidos e ausência de Pygame no domínio. Revisão dos arquivos novos,
+parse AST e compileall complementam a leitura; não foi instalado linter.
+
+### Demonstração e limites
+
+Relatório completo em `docs/GENETICS_DEMO.md`, com os 26 nascimentos:
+ID progenitor/filhote, tempo, geração, genes dos dois e mudanças efetivas.
+Script permanente `scripts/demonstrate_genetics.py`; executar na raiz:
+`.venv/bin/python -m scripts.demonstrate_genetics`. Esta forma não importa
+Pygame nem exige ffmpeg. Para mídia opcional, adicionar
+`--gif docs/media/sprint4.gif`; ffmpeg preexistente, sem nova dependência.
+
+Cenário: World(seed=42), parâmetros oficiais padrão, área 800 ×600,
+população inicial dez, geração zero, energia 100, idade/cooldown zero,
+speed sorteado 25–90, vision 100, efficiency 1. Comida inicial 75,
+reposição 1/s até 125. 3600 passos de 1/60 s, total 60 s lógicos;
+probabilidade 12% por gene e desvio 8% da amplitude. Sem edição de energia,
+idade, cooldown ou alimentos, e sem alterar regras oficiais para reproduzir.
+
+Resultado: 26 nascimentos, seis mortes, máximo 34 criaturas e final 30;
+geração máxima três. Linhagem 8 → 18 → 25 → 35 (gerações 0 → 1 → 2 → 3):
+
+| Relação | Genes do progenitor (speed, vision, efficiency) | Genes do filhote | Mudanças |
+| --- | --- | --- | --- |
+| 8 → 18, geração 1 | (60,882641; 100; 1) | (62,677782; 100; 1) | speed |
+| 18 → 25, geração 2 | (62,677782; 100; 1) | (62,677782; 100; 1) | nenhuma |
+| 25 → 35, geração 3 | (62,677782; 100; 1) | (62,677782; 100; 1,022780) | efficiency |
+
+O GIF tem 225 quadros a 15 FPS e mostra 60 s lógicos em 15 s de mídia,
+a 4x. Renderização fora da tela, legendas e anéis exclusivos da demonstração;
+um quadro foi inspecionado pelo agente para legibilidade. Não houve janela
+real/X11, inspeção manual pelo usuário ou validação Windows da Sprint 4.
+
+A execução não apresentou mudança em vision; testes controlados verificam
+sua mutação e efeito na percepção. A demonstração prova herança e variação,
+não adaptação: sem comparação entre ambientes/seeds, médias ou inferência
+causal de seleção. Ausência de limite populacional e sobreposição de filhotes
+nas bordas permanecem como antes. Estabilidade de 15 minutos e métricas são
+trabalho de sprints posteriores; Sprint 5 não autorizada. Sem bloqueios de
+ambiente, instalação ou permissões; nenhuma dependência instalada.
+
+### Arquivos e próxima ação
+
+Criados: evolife/genetics.py, tests/test_genetics.py,
+scripts/demonstrate_genetics.py, docs/GENETICS_DEMO.md, docs/media/sprint4.gif.
+Modificados: evolife/config.py, evolife/creature.py, evolife/world.py,
+tests/test_food.py, tests/test_reproduction.py, tests/test_timing.py,
+tests/test_world.py, AGENTS.md, README.md, docs/ARCHITECTURE.md,
+docs/SPRINTS.md, docs/TASKS.md e esta memória.
+
+S4-01 a S4-06 concluídas; critérios técnicos do MVP Evolutivo 0.1 atendidos,
+aguardando revisão técnica e aprovação do usuário. Desenvolvimento interrompido.
+Próxima ação: usuário revisar código, testes, relatório e GIF; executar
+`python main.py` no desktop para avaliação manual, se desejar. Nenhum commit,
+push, PR, tag, merge, publicação ou alteração da main feito pelo agente.
+Não retomar desenvolvimento nem iniciar Sprint 5 sem nova instrução autorizada.

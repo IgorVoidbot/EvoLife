@@ -1,6 +1,7 @@
 # Quadro de tarefas
 
-Escopo autorizado: Sprint 3. Sprint 4 não autorizada. Manter uma tarefa
+Escopo autorizado: Sprint 4, entrega técnica concluída para revisão.
+Desenvolvimento interrompido; Sprint 5 não autorizada. Manter uma tarefa
 de implementação em andamento por vez. Atualizar este arquivo ao concluir
 cada tarefa; evidências detalhadas ficam em `PROJECT_STATE.md`.
 
@@ -47,7 +48,7 @@ cada tarefa; evidências detalhadas ficam em `PROJECT_STATE.md`.
 | S2-07 | Revisar código e entregar documentação | Revisão, README, arquitetura, evidências e limites registrados | Concluída |
 | S2-08 | Aprovar e integrar a Sprint 2 | PR #3, merge 3b75b6e; validação manual Ubuntu sem erros | Concluída pelo usuário |
 
-## Sprint 3 — entrega técnica concluída para revisão
+## Sprint 3 — concluída, aprovada e integrada pelo PR #4
 
 | ID | Tarefa | Critério / evidência | Status |
 | --- | --- | --- | --- |
@@ -59,8 +60,20 @@ cada tarefa; evidências detalhadas ficam em `PROJECT_STATE.md`.
 | S3-06 | Demonstrar nascimentos pelas regras reais | GIF de 15 s; seed 42, 60 s lógicos, 28 nascimentos e 5 mortes | Concluída |
 | S3-07 | Revisar código, documentar e entregar | Revisão estática, verificações e memória atualizadas | Concluída |
 | S3-08 | Executar aplicação manualmente no Ubuntu | Usuário relatou execução do EvoLife sem identificar erros; 103 testes automatizados anteriores preservados | Concluída pelo usuário |
+| S3-09 | Revisão técnica, aprovação e integração | PR #4, merge 96ab068 confirmado pelo usuário e Git | Concluída pelo usuário |
 
-Não iniciar Sprint 4 nem realizar commits automaticamente.
+## Sprint 4 — entrega técnica concluída para revisão
+
+| ID | Tarefa | Critério / evidência | Status |
+| --- | --- | --- | --- |
+| S4-01 | Preparar estado e conferir develop/main | Base limpa 96ab068; branches iguais; 103 testes aprovados | Concluída |
+| S4-02 | Estruturar e validar os três genes | Genes imutáveis e propriedades compatíveis; validação executada | Concluída |
+| S4-03 | Implementar herança, mutação e linhagem | 12% por gene; normal de 8%; RNG próprio; parent_id | Concluída |
+| S4-04 | Testar genética e preservar regressões | 192 testes aprovados; 103 anteriores e 89 genéticos | Concluída |
+| S4-05 | Demonstrar duas gerações descendentes | Gerações 0–3; relatório reproduzível; GIF 800 ×600, 225 quadros, 15 s | Concluída |
+| S4-06 | Revisar código, documentar e entregar | Revisão estática, compileall, pip check, PRD, diff check e memória | Concluída |
+
+Não iniciar Sprint 5 nem realizar commits, pushes ou PRs automaticamente.
 
 As demais entregas estão em `SPRINTS.md` e no PRD. Aprendizado desta fundação:
 a distribuição instalada pode mudar por compatibilidade sem alterar o nome
