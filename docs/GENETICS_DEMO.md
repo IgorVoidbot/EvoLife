@@ -74,4 +74,13 @@ python -m scripts.demonstrate_genetics --gif docs/media/sprint4.gif
 Limites: demonstração de herança e variação em uma execução; não prova
 adaptação nem favorecimento causal de genes. Sem coleta de médias,
 HUD ou exportação CSV; não é um experimento comparativo de seleção.
-A inspeção manual no desktop e a validação Windows estão pendentes.
+A inspeção manual no desktop e a validação Windows estavam pendentes no
+momento da geração deste relatório.
+
+Atualização posterior: o usuário relatou execução da aplicação e da suíte
+da Sprint 4 no Ubuntu sem identificar erros; a revisão estática externa após
+o commit/push para develop não identificou problemas bloqueantes. Esse relato
+é separado dos 192 testes executados pelo Codex na entrega técnica. A execução
+Windows permanece pendente. A atualização documental não altera os dados da
+demonstração acima; o script reproduz o relatório original, sem esta nota.
+Detalhes em [PROJECT_STATE.md](PROJECT_STATE.md).

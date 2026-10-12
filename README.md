@@ -3,8 +3,8 @@
 Laboratório desktop 2D de vida e evolução artificial, feito em Python.
 O objetivo é investigar herança, mutações e sobrevivência; dados agregados
 aguardam suas sprints. **A implementação atual vai até a Sprint 4, MVP
-Evolutivo 0.1 entregue para revisão:** criaturas se movimentam,
-buscam comida, gastam energia, morrem e geram descendentes por reprodução
+Evolutivo 0.1 revisado externamente e validado pelo usuário no Ubuntu:**
+criaturas se movimentam, buscam comida, gastam energia, morrem e geram descendentes por reprodução
 assexuada, com genes herdados e mutações aleatórias. A população começa com
 dez e pode aumentar ou diminuir.
 Movimento com reflexão, passos fixos e encerramento seguro foram preservados.
@@ -170,7 +170,8 @@ tempo simulado em diferentes cadências de renderização. Há uma execução de
 Para verificar a aparência, execute `python main.py` no desktop e encerre
 com Esc ou pelo botão. O driver `dummy` não comprova a aparência no monitor.
 
-Os **192 testes** passaram com Python 3.14.4, pygame-ce 2.5.8 e pytest 9.1.1:
+Na entrega técnica, o **Codex executou 192 testes**, que passaram com
+Python 3.14.4, pygame-ce 2.5.8 e pytest 9.1.1:
 103 casos anteriores preservados e 89 novos casos genéticos.
 Incluem busca, consumo, competição, fórmula de energia, teto, remoção de
 mortos, reposição, extinção e os comportamentos das sprints anteriores.
@@ -181,8 +182,12 @@ configurável, oito combinações de decisões por gene, normal/sigmas, variaç�
 positivas/negativas/nulas, limites, rejeição de valores, progenitor preservado,
 linhagem, duas gerações descendentes e efeitos sobre movimento/visão/energia.
 Testes antigos de cópia e cadência explicitam mutação zero; os 103 casos
-anteriores continuam na suíte. Avaliação manual da Sprint 4 no desktop e
-execução Windows permanecem pendentes.
+anteriores continuam na suíte. Posteriormente, o usuário executou a aplicação
+e a suíte de testes da Sprint 4 no Ubuntu, sem identificar erros. Esse relato
+é separado dos 192 testes do Codex, sem novo total ou saída detalhada informados.
+A revisão estática externa após o push para develop não identificou problemas
+bloqueantes, conforme informado pelo usuário. Não houve reexecução dos testes
+pelo agente nesta atualização documental. Execução Windows permanece pendente.
 Veja a [demonstração de nascimentos da Sprint 3](docs/media/sprint3.gif):
 configuração padrão, seed 42, dez criaturas e 75 alimentos iniciais, energia
 100, idade zero, passos de 1/60 s. Em 60 s simulados ocorreram 28 nascimentos
@@ -239,5 +244,8 @@ Leia `AGENTS.md` e a memória compartilhada antes de alterar o projeto em
 qualquer CLI. A Sprint 1 foi aprovada e integrada à main pelo PR #1. A entrega
 da Sprint 2 foi aprovada e integrada pelo PR #3 (3b75b6e). Sprint 3 concluída,
 aprovada na revisão técnica e integrada pelo PR #4 (96ab068). Sprint 4
-autorizada, entregue para revisão; desenvolvimento interrompido. Sprint 5
-não autorizada. Sem commits, pushes, PRs ou integração automática.
+concluída tecnicamente, com revisão estática externa sem problemas bloqueantes
+e aplicação/suíte validadas pelo usuário no Ubuntu. O usuário realizou commit
+f90c98f e push para develop, confirmados no Git local. Integração da Sprint 4
+à main não informada; main permanece em 96ab068. Desenvolvimento interrompido;
+Sprint 5 não autorizada. Sem novos commits, pushes, PRs ou integração pelo agente.

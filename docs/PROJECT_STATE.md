@@ -1,6 +1,6 @@
 # Memória compartilhada — EvoLife
 
-Última atualização: 12/10/2026, entrega técnica da Sprint 4 para revisão.
+Última atualização: 12/10/2026, revisão externa e validação da Sprint 4 pelo usuário.
 
 ## Protocolo de continuidade
 
@@ -11,9 +11,15 @@ relevantes. Resultados abaixo representam evidências executadas, não intençõ
 
 ## Estado e autorização
 
-- Sprint atual: **4**, **entrega técnica concluída e aguardando revisão e
-  aprovação do usuário**. Desenvolvimento interrompido; sem autorização para
-  commit, push, PR ou integração.
+- Sprint atual: **4**, **entrega técnica concluída, revisada externamente sem
+  problemas bloqueantes e validada pelo usuário no Ubuntu**. Desenvolvimento
+  interrompido; sessão atual autorizada somente para documentação.
+- Usuário executou a aplicação e a suíte de testes da Sprint 4 no Ubuntu sem
+  identificar erros. Relato separado dos **192 testes executados pelo Codex**
+  na entrega técnica; não foi informado novo total ou saída detalhada da suíte.
+- Commit e push da Sprint 4 realizados pelo usuário: `f90c98f`, presente em
+  develop e origin/develop. main e origin/main permanecem em `96ab068`;
+  integração da Sprint 4 à main não informada. Sem novos commits pelo agente.
 - Sprint 3 concluída, aprovada na revisão técnica e integrada à main pelo
   **PR #4**, merge `96ab068`, confirmado pelo usuário e pelo Git local.
 - Usuário executou manualmente o EvoLife da Sprint 3 no Ubuntu e não
@@ -26,8 +32,8 @@ relevantes. Resultados abaixo representam evidências executadas, não intençõ
 - Sprint 1 concluída, aprovada e integrada à main; merge do **PR #1**
   confirmado pelo usuário nesta sessão.
 - Sprint 0 concluída e registrada pelo usuário em `73d5e04`.
-- Sprint 5: **não autorizada**. Encerrar ao concluir a Sprint 4 e aguardar
-  revisão técnica e aprovação. Commits, pushes e PRs não autorizados.
+- Sprint 5: **não autorizada**. Aguardar novas instruções do usuário.
+  Novos commits, pushes, PRs ou integração não autorizados nesta sessão.
 - PRD original: lido e preservado; não editar.
 - Commits, tags, pushes e publicação: não autorizados.
 - Preservar Python global 3.14 e `.venv`; não usar sudo, instalar SDL ou
@@ -41,8 +47,10 @@ Sprint 4 implementada: Genes imutáveis e validados, herança com 12% de mutaç�
 independente por gene, normal de desvio 8% da amplitude, limitação ao PRD,
 parent_id e geração. Creature mantém propriedades compatíveis; World usa seu
 RNG e preserva as regras de energia, reprodução e sobrevivência. 192 testes
-aprovados; demonstração com gerações 0–3. Critérios técnicos do MVP Evolutivo
-0.1 atendidos, pendente aprovação do usuário. Sem HUD, CSV, controles novos
+aprovados pelo Codex na entrega técnica; demonstração com gerações 0–3.
+Critérios técnicos do MVP Evolutivo 0.1 atendidos; revisão externa sem
+bloqueantes e validação Ubuntu relatadas posteriormente pelo usuário.
+Integração à main não informada. Sem HUD, CSV, controles novos
 ou dependências adicionais. Base histórica abaixo; evidências novas ao final.
 
 ### Base histórica da Sprint 3
@@ -689,3 +697,47 @@ Próxima ação: usuário revisar código, testes, relatório e GIF; executar
 `python main.py` no desktop para avaliação manual, se desejar. Nenhum commit,
 push, PR, tag, merge, publicação ou alteração da main feito pelo agente.
 Não retomar desenvolvimento nem iniciar Sprint 5 sem nova instrução autorizada.
+
+## Validação posterior da Sprint 4 — revisão externa e usuário no Ubuntu — 12/10/2026
+
+O usuário informou que, após o push para develop, a Sprint 4 foi revisada
+tecnicamente e a revisão estática externa não identificou problemas bloqueantes.
+Também relatou ter executado a aplicação e a suíte de testes no Ubuntu sem
+identificar erros. Esta seção complementa a entrega técnica anterior, cujas
+pendências e restrições representam aquele momento e foram preservadas.
+
+As evidências são distintas:
+
+- **Codex, entrega técnica anterior:** 192 passed in 6.85s, saída 0, SDL dummy;
+  103 casos anteriores e 89 novos. Resultado e comandos históricos preservados.
+- **Usuário, execução no Ubuntu:** aplicação e suíte executadas sem erros
+  identificados, conforme relato. Sem novo total, duração, comando exato ou
+  saída detalhada informados; não se atribui o total 192 a esta execução.
+- **Revisão estática externa após o push:** sem problemas bloqueantes,
+  conforme informação do usuário; não foi fornecido relatório detalhado.
+
+A pendência de validação manual no Ubuntu fica atendida pelo relato.
+Validação Windows permanece pendente. Não houve nova execução da aplicação
+ou da suíte pelo Codex nesta sessão exclusivamente documental.
+
+Commit e push foram realizados pelo usuário, sem ação Git de escrita pelo
+agente. Conferência local: branch develop, árvore inicialmente limpa,
+develop e origin/develop em `f90c98fd21fd5e0990ee1f8db17b6ce33f2e3eba`
+(`feat: adicionar heranca genetica e mutacoes`); main e origin/main em
+`96ab068fd608a2cbfe6cc60f512b27972fefa9d8`. Integração da Sprint 4 à main
+não informada. Sem fetch, checkout ou alteração de referências nesta sessão.
+
+S4-07 a S4-10 registradas: commit/push do usuário, revisão externa, validação
+Ubuntu e atualização documental. Alterados somente AGENTS.md, README.md,
+docs/PROJECT_STATE.md, docs/TASKS.md, docs/SPRINTS.md e docs/GENETICS_DEMO.md.
+O relatório da demonstração mantém os resultados originais e recebe somente
+nota posterior; o script reproduz o texto original, sem essa nota documental.
+Código, testes, script, mídias e PRD preservados. Nenhum commit ou push pelo
+agente; Sprint 5 não iniciada e não autorizada. Desenvolvimento interrompido;
+aguardar novas instruções, sem presumir autorização de integração à main.
+
+Verificações documentais executadas nesta sessão: `git diff --check`, saída 0;
+conferência de whitespace e links locais, aprovada; comparação do histórico
+da memória com HEAD confirmou preservação integral a partir da base histórica
+da Sprint 3. `git status --short` mostra somente os seis documentos acima
+modificados, sem arquivos novos. Código, testes, PRD e mídias sem diferenças.

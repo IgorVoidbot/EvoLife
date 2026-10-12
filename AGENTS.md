@@ -18,8 +18,10 @@ de plugins, configurações privadas ou memória exclusiva de um CLI.
   A Sprint 1 está concluída, aprovada e integrada à main pelo PR #1.
   A Sprint 2 está concluída, revisada, aprovada e integrada à main pelo PR #3
   (merge 3b75b6e). A Sprint 3 foi concluída, aprovada na revisão técnica e
-  integrada à main pelo PR #4 (merge 96ab068). Sprint 4 autorizada, com
-  entrega técnica concluída e aguardando revisão e aprovação do usuário.
+  integrada à main pelo PR #4 (merge 96ab068). Sprint 4 concluída tecnicamente,
+  com revisão estática externa sem problemas bloqueantes e aplicação/suíte
+  validadas pelo usuário no Ubuntu, sem erros relatados. O usuário realizou
+  commit f90c98f e push para develop; integração à main não informada.
   Desenvolvimento interrompido. Sprint 5 não autorizada. Sem commit automático.
 - Preserve arquivos existentes e mudanças do usuário. Nunca altere o PRD.
 - Não faça commits, tags, pushes ou publicação sem autorização explícita.

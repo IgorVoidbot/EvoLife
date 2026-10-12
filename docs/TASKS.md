@@ -1,6 +1,7 @@
 # Quadro de tarefas
 
-Escopo autorizado: Sprint 4, entrega técnica concluída para revisão.
+Escopo autorizado nesta sessão: somente documentação da Sprint 4, concluída
+tecnicamente, revisada externamente e validada pelo usuário no Ubuntu.
 Desenvolvimento interrompido; Sprint 5 não autorizada. Manter uma tarefa
 de implementação em andamento por vez. Atualizar este arquivo ao concluir
 cada tarefa; evidências detalhadas ficam em `PROJECT_STATE.md`.
@@ -62,7 +63,7 @@ cada tarefa; evidências detalhadas ficam em `PROJECT_STATE.md`.
 | S3-08 | Executar aplicação manualmente no Ubuntu | Usuário relatou execução do EvoLife sem identificar erros; 103 testes automatizados anteriores preservados | Concluída pelo usuário |
 | S3-09 | Revisão técnica, aprovação e integração | PR #4, merge 96ab068 confirmado pelo usuário e Git | Concluída pelo usuário |
 
-## Sprint 4 — entrega técnica concluída para revisão
+## Sprint 4 — concluída tecnicamente, revisada e validada no Ubuntu
 
 | ID | Tarefa | Critério / evidência | Status |
 | --- | --- | --- | --- |
@@ -72,6 +73,12 @@ cada tarefa; evidências detalhadas ficam em `PROJECT_STATE.md`.
 | S4-04 | Testar genética e preservar regressões | 192 testes aprovados; 103 anteriores e 89 genéticos | Concluída |
 | S4-05 | Demonstrar duas gerações descendentes | Gerações 0–3; relatório reproduzível; GIF 800 ×600, 225 quadros, 15 s | Concluída |
 | S4-06 | Revisar código, documentar e entregar | Revisão estática, compileall, pip check, PRD, diff check e memória | Concluída |
+| S4-07 | Registrar commit e push realizados pelo usuário | f90c98f presente em develop e origin/develop; main permanece em 96ab068 | Concluída pelo usuário |
+| S4-08 | Revisar tecnicamente após push para develop | Revisão estática externa sem problemas bloqueantes, conforme relato do usuário | Concluída conforme relato do usuário |
+| S4-09 | Executar aplicação e suíte no Ubuntu | Usuário não identificou erros; relato separado dos 192 testes do Codex, sem novo total informado | Concluída pelo usuário |
+| S4-10 | Atualizar documentação da validação | Evidências separadas, histórico preservado; sem alterar código, testes ou PRD | Concluída |
+
+Integração da Sprint 4 à main não informada; desenvolvimento interrompido.
 
 Não iniciar Sprint 5 nem realizar commits, pushes ou PRs automaticamente.
 
