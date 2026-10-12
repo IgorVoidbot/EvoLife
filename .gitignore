@@ -1,0 +1,28 @@
+# Ambientes virtuais e arquivos gerados pelo Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Testes e cobertura
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Configuração local e credenciais
+.env
+.env.*
+!.env.example
+.aws/
+.idea/
+.vscode/
+
+# Arquivos temporários do sistema/editor
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
