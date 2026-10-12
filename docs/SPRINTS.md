@@ -2,15 +2,15 @@
 
 Fonte: `EvoLife_PRD_Roadmap.md`, versão 1.0. O documento original permanece
 inalterado. A cadência sugerida é semanal; os critérios de aceite orientam
-a conclusão, sem impor datas. Sprint 2 autorizada; Sprint 3 não autorizada.
+a conclusão, sem impor datas. Sprint 3 autorizada; Sprint 4 não autorizada.
 
 | Sprint | Esforço do PRD | Entrega / portão de aceite | Status |
 | --- | --- | --- | --- |
 | 0 | 2–3 h | Repositório, venv, dependências, README; janela 800 × 600 abre, redesenha e fecha | Concluída e registrada pelo usuário em 73d5e04 |
 | 1 | 4–6 h | 10 criaturas se movem por tempo decorrido; bordas verificadas | Concluída, aprovada e integrada à main pelo PR #1 |
-| 2 | 6–8 h | Comida, busca, consumo, energia, morte e reposição | Entrega técnica concluída; aguarda revisão |
-| 3 | 5–7 h | Idade, cooldown, reprodução e transferência de energia | Não iniciada e não autorizada |
-| 4 | 6–8 h | Genes herdáveis, mutação limitada e gerações; MVP 0.1 | Não iniciada |
+| 2 | 6–8 h | Comida, busca, consumo, energia, morte e reposição | Concluída, aprovada e integrada pelo PR #3 (3b75b6e) |
+| 3 | 5–7 h | Idade, cooldown, reprodução e transferência de energia | Entrega técnica concluída; aguarda revisão |
+| 4 | 6–8 h | Genes herdáveis, mutação limitada e gerações; MVP 0.1 | Não iniciada e não autorizada |
 | 5 | 4–6 h | Indicadores, médias, amostras e exportação CSV | Não iniciada |
 | 6 | 3–5 h | Pausa, reinício, passo único e repetibilidade por semente | Não iniciada |
 | 7 | 5–8 h | Testes, estabilidade por 15 minutos, mídia e release 1.0 | Não iniciada |
@@ -51,20 +51,44 @@ e encerramento sem erro; [GIF de 15 segundos](media/sprint1.gif).
 A Sprint 1 foi aprovada e integrada à main pelo PR #1, conforme confirmação
 do usuário. O agente não realizou commit automático.
 
-## Sprint 2 — entrega técnica concluída para revisão
+## Sprint 2 — concluída, aprovada e integrada
 
 Implementar Food com 75 unidades iniciais, busca do alimento visível mais
 próximo, exploração sem alvo, consumo com ganho de 45 e teto de 130, gasto
 energético pela fórmula do PRD, remoção segura de mortos e reposição de 1/s
 até 125 alimentos. Validar energia, busca, competição, reposição e extinção,
 preservando movimento, bordas, tempo fixo e encerramento. Demonstrar uma
-criatura com fome comendo. Interromper para revisão; Sprint 3 não autorizada.
+criatura com fome comendo. Plano da entrega original, concluído e aprovado.
 
 **Evidências:** 71 testes aprovados com SDL dummy; busca, energia, consumo,
 morte, reposição e extinção validados. Pip check, compileall e hash do PRD
 aprovados. [GIF de alimentação de 6 segundos](media/sprint2.gif), renderizado
 fora da tela com legendas exclusivas da demonstração. Não houve validação
-da Sprint 2 com driver gráfico de desktop nem inspeção manual pelo usuário.
-Entrega técnica concluída, desenvolvimento interrompido e aguardando revisão.
+da Sprint 2 com driver gráfico de desktop pelo agente. Posteriormente,
+o usuário executou aplicação e testes no Ubuntu sem identificar erros.
+Sprint 2 aprovada e integrada à main pelo PR #3, merge 3b75b6e.
 
-## Sprint 2: aprovada na revisão de código, com pequeno ajuste documental recomendado.
+Registro anterior preservado: Sprint 2 aprovada na revisão de código,
+com pequeno ajuste documental recomendado; referências de estado corrigidas
+na abertura da Sprint 3.
+
+## Sprint 3 — entrega técnica concluída para revisão
+
+Implementar idade, cooldown de 10 s e reprodução assexuada: idade ≥10 s,
+energia ≥110 e cooldown encerrado. Transferir 45 para o filhote; copiar
+velocidade, visão e eficiência; novo ID e geração do progenitor +1. Posicionar
+próximo e dentro das bordas, usando RNG próprio. Aplicar nascimentos e mortes
+fora da iteração e registrar totais. Validar bloqueios, conservação, limites,
+IDs, determinismo e extinção; demonstrar nascimento com parâmetros registrados.
+Interromper para revisão. Sem mutações; Sprint 4 não autorizada.
+
+**Evidências:** 103 testes aprovados com SDL dummy; idade, cooldown, bloqueios,
+conservação no nascimento, limites, IDs, eventos, extinção e repetibilidade
+validados. Revisão estática, pip check, compileall e hash do PRD aprovados.
+[GIF de 15 segundos](media/sprint3.gif): configuração padrão, seed 42,
+60 s simulados com passos de 1/60 s, 28 nascimentos e 5 mortes. Mídia a 4x,
+renderizada fora da tela, com legendas exclusivas da demonstração. População
+inicial 10, máxima 34 e final 33. Posteriormente, o usuário executou manualmente
+o EvoLife da Sprint 3 no Ubuntu e não identificou erros. Relato separado dos
+103 testes automatizados anteriores, cujos resultados foram preservados.
+Desenvolvimento interrompido; aguardar revisão antes de commit ou integração.

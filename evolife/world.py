@@ -1,4 +1,4 @@
-"""Movimento, alimento e sobrevivência, independentes de Pygame."""
+"""Movimento, sobrevivência e reprodução, independentes de Pygame."""
 
 import math
 import random
@@ -15,6 +15,9 @@ from evolife.config import (
     MAX_WANDER_INTERVAL,
     MIN_SPEED,
     MIN_WANDER_INTERVAL,
+    OFFSPRING_DISTANCE,
+    REPRODUCTION_COOLDOWN,
+    REPRODUCTION_ENERGY_TRANSFER,
     WINDOW_HEIGHT,
     WINDOW_WIDTH,
 )
@@ -34,12 +37,16 @@ class World:
         self.width = width
         self.height = height
         self.random = random.Random(seed)
+        self._next_creature_id = 0
+        self.births_total = 0
+        self.deaths_total = 0
         self.creatures = [
             Creature(
                 x=self.random.uniform(CREATURE_RADIUS, width - CREATURE_RADIUS),
                 y=self.random.uniform(CREATURE_RADIUS, height - CREATURE_RADIUS),
                 direction=self.random.uniform(0.0, math.tau),
                 speed=self.random.uniform(MIN_SPEED, MAX_SPEED),
+                id=self._allocate_id(),
             )
             for _ in range(INITIAL_POPULATION)
         ]
@@ -49,6 +56,38 @@ class World:
             )
         self.foods = [self._create_food() for _ in range(INITIAL_FOOD_COUNT)]
         self._food_spawn_progress = 0.0
+
+    def _allocate_id(self) -> int:
+        creature_id = self._next_creature_id
+        self._next_creature_id += 1
+        return creature_id
+
+    def _reproduce(self, parent: Creature) -> Creature:
+        """Crie um filhote próximo e transfira energia, sem atualizar a população."""
+        angle = self.random.uniform(0.0, math.tau)
+        child = Creature(
+            x=min(
+                self.width - CREATURE_RADIUS,
+                max(CREATURE_RADIUS, parent.x + math.cos(angle) * OFFSPRING_DISTANCE),
+            ),
+            y=min(
+                self.height - CREATURE_RADIUS,
+                max(CREATURE_RADIUS, parent.y + math.sin(angle) * OFFSPRING_DISTANCE),
+            ),
+            direction=angle,
+            speed=parent.speed,
+            energy=REPRODUCTION_ENERGY_TRANSFER,
+            vision=parent.vision,
+            efficiency=parent.efficiency,
+            wander_remaining=self.random.uniform(
+                MIN_WANDER_INTERVAL, MAX_WANDER_INTERVAL
+            ),
+            id=self._allocate_id(),
+            generation=parent.generation + 1,
+        )
+        parent.energy -= REPRODUCTION_ENERGY_TRANSFER
+        parent.reproduction_cooldown = REPRODUCTION_COOLDOWN
+        return child
 
     def _create_food(self) -> Food:
         return Food(
@@ -86,16 +125,22 @@ class World:
             self._food_spawn_progress = 0.0
 
     def update(self, dt: float) -> None:
-        """Resolva alimentação e movimento, gasto, mortes e reposição, nessa ordem."""
+        """Avance sobrevivência e reprodução; aplique mortes e nascimentos ao final."""
         if not math.isfinite(dt) or dt < 0:
             raise ValueError("dt deve ser finito e não negativo")
         if dt == 0:
             return
 
         survivors = []
+        newborns = []
         for creature in self.creatures:
+            # Criaturas de cenários preparados também recebem ID do mundo.
+            if creature.id is None:
+                creature.id = self._allocate_id()
             if creature.energy <= 0:
+                self.deaths_total += 1
                 continue
+            creature.advance_lifecycle(dt)
             # Comida na posição inicial também conta, antes de sair do contato.
             self._consume_food(creature)
             creature.steer(dt, self.foods, self.random)
@@ -104,5 +149,10 @@ class World:
             creature.spend_energy(dt)
             if creature.energy > 0:
                 survivors.append(creature)
-        self.creatures = survivors
+                if creature.can_reproduce():
+                    newborns.append(self._reproduce(creature))
+            else:
+                self.deaths_total += 1
+        self.creatures = survivors + newborns
+        self.births_total += len(newborns)
         self._replenish_food(dt)

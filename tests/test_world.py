@@ -26,16 +26,18 @@ def test_initial_population_has_ten_distinct_positions_and_directions():
 
 def test_all_creatures_move_and_stay_inside_for_one_minute():
     world = World()
-    initial_positions = [(creature.x, creature.y) for creature in world.creatures]
+    initial_creatures = world.creatures.copy()
+    initial_positions = [(creature.x, creature.y) for creature in initial_creatures]
     for _ in range(3600):
         world.update(FIXED_DT)
         for creature in world.creatures:
             assert CREATURE_RADIUS <= creature.x <= world.width - CREATURE_RADIUS
             assert CREATURE_RADIUS <= creature.y <= world.height - CREATURE_RADIUS
-    assert len(world.creatures) == 10
-    for creature, initial in zip(world.creatures, initial_positions):
+    assert len(world.creatures) == 10 + world.births_total - world.deaths_total
+    assert len({creature.id for creature in world.creatures}) == len(world.creatures)
+    for creature, initial in zip(initial_creatures, initial_positions):
         assert (creature.x, creature.y) != pytest.approx(initial)
-        assert 0 < creature.energy <= 130.0
+        assert 0 <= creature.energy <= 130.0
 
 
 def test_empty_world_remains_updatable():

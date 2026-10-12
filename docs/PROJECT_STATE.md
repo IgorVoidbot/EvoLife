@@ -1,6 +1,6 @@
 # Memória compartilhada — EvoLife
 
-Última atualização: 12/10/2026, validação manual da Sprint 2 relatada pelo usuário.
+Última atualização: 12/10/2026, validação manual da Sprint 3 relatada pelo usuário.
 
 ## Protocolo de continuidade
 
@@ -11,14 +11,19 @@ relevantes. Resultados abaixo representam evidências executadas, não intençõ
 
 ## Estado e autorização
 
-- Sprint atual: **2**, **entrega técnica concluída e aguardando revisão**.
-  Desenvolvimento interrompido; ajustes somente conforme revisão do usuário.
+- Sprint atual: **3**, **entrega técnica concluída e aguardando revisão**.
+  Desenvolvimento interrompido; sem autorização para commit ou integração.
+- Usuário executou manualmente o EvoLife da Sprint 3 no Ubuntu e não
+  identificou erros; relato registrado ao final, separado dos 103 testes
+  automatizados já aprovados.
+- Sprint 2 concluída, revisada, aprovada e integrada à main pelo PR #3,
+  merge `3b75b6e`, confirmado pelo usuário e presente na develop/origin/main.
 - Usuário executou manualmente a aplicação e a suíte de testes da Sprint 2
   no Ubuntu, sem identificar erros; relato registrado ao final deste documento.
 - Sprint 1 concluída, aprovada e integrada à main; merge do **PR #1**
   confirmado pelo usuário nesta sessão.
 - Sprint 0 concluída e registrada pelo usuário em `73d5e04`.
-- Sprint 3: **não autorizada**. Encerrar ao concluir a Sprint 2 e aguardar
+- Sprint 4: **não autorizada**. Encerrar ao concluir a Sprint 3 e aguardar
   revisão. Novos commits não autorizados.
 - PRD original: lido e preservado; não editar.
 - Commits, tags, pushes e publicação: não autorizados.
@@ -28,6 +33,15 @@ relevantes. Resultados abaixo representam evidências executadas, não intençõ
   no ambiente. Instalar exclusivamente pacotes pré-compilados.
 
 ## Implementação atual
+
+Sprint 3 implementada: idade e cooldown por tempo lógico, reprodução assexuada
+com transferência de energia, IDs únicos, geração básica, características
+copiadas sem mutação e contadores de nascimentos/mortes. Filhotes entram ao
+final do passo e só agem no seguinte. Comida, metabolismo, bordas e encerramento
+preservados; domínio sem Pygame, tempo fixo 1/60 s e RNG próprio. Sem estrutura
+genética, mutações, HUD ou controles novos. Evidências ao final.
+
+### Base histórica da Sprint 2
 
 Sprint 2 implementada: Food, 75 alimentos iniciais, busca por visão, exploração,
 consumo, gasto energético, remoção de mortos e reposição a 1/s até 125.
@@ -260,9 +274,10 @@ critérios da Sprint 1. A memória distingue segundos lógicos de duração real
 
 ## Próxima ação
 
-Aguardar revisão do usuário da Sprint 2. Para avaliar, usar
+Aguardar revisão do usuário da Sprint 3 antes de qualquer commit ou integração.
+Para avaliar, usar
 `source .venv/bin/activate`, `python main.py` e `python -m pytest -q`.
-Não iniciar Sprint 3, commits, pushes ou merges sem autorização explícita.
+Não iniciar Sprint 4, commits, pushes ou merges sem autorização explícita.
 
 
 ## Abertura da Sprint 2 — 12/10/2026
@@ -356,7 +371,8 @@ nenhuma garantia de equivalência de decisões para dt arbitrariamente grande.
 Sem reprodução: a população pode chegar a zero e não se renova nesta sprint.
 Não houve dificuldade de ambiente nem instalação adicional.
 
-S2-06 e S2-07 concluídas; entrega técnica da Sprint 2 aguardando revisão.
+S2-06 e S2-07 concluídas. Na entrega original, a Sprint 2 aguardava revisão;
+posteriormente foi aprovada e integrada pelo PR #3 (ver abertura da Sprint 3).
 Não foram executados commits, tags, pushes, merges, fetch ou publicação.
 A main local foi preservada. Nenhum trabalho da Sprint 3 foi iniciado.
 
@@ -376,7 +392,144 @@ Os resultados anteriores foram preservados, incluindo os 71 testes aprovados
 na validação do agente. A suíte não foi executada novamente pelo agente nesta
 atualização documental. A pendência de avaliação manual da aplicação no Ubuntu
 fica atendida pelo relato acima, sem alterar o estado de aprovação ou integração
-da Sprint 2. A Sprint 3 permanece não autorizada.
+da Sprint 2 naquele registro. A Sprint 3 ainda não estava autorizada
+naquele momento; a autorização posterior consta na abertura abaixo.
 
 Somente esta memória foi atualizada nesta tarefa; nenhum código foi modificado
 e nenhum commit foi realizado. As alterações preexistentes foram preservadas.
+
+
+## Abertura da Sprint 3 — 12/10/2026
+
+- Sprint 2 concluída, revisada, aprovada e integrada pelo PR #3. Sprint 3
+  autorizada nesta sessão; Sprint 4 não autorizada. Preservado o histórico.
+- Git inicialmente limpo. develop, origin/develop e origin/main apontam para
+  3b75b6e; `git rev-list --left-right --count origin/main...develop`: 0 / 0.
+- main local continua em 73d5e04, sete commits atrás, sem alterações. A develop
+  contém a versão estável aprovada indicada pelo usuário; não houve fetch,
+  checkout, merge ou atualização da main local.
+- Base executada: `.venv/bin/python -m pytest -q`, **71 passed in 1.57s**,
+  saída 0, SDL dummy. Python e .venv preservados; sem instalação.
+- S3-01 concluída. Plano: idade/cooldown e identidade básica; nascimento após
+  sobrevivência com transferência 45; coleção de filhotes aplicada ao final;
+  totais de eventos; testes de regras e determinismo; demonstração e revisão.
+- Sem estrutura genética nova, mutações, HUD ou funcionalidades da Sprint 4.
+
+## Implementação da Sprint 3 — S3-02 a S3-04
+
+- Creature recebeu age_seconds, reproduction_cooldown, id e generation, sem
+  estrutura genética. World distribui IDs inteiros crescentes a partir de 0,
+  não reutilizados após morte; criaturas isoladas podem ter id None, atribuído
+  pelo mundo ao processar cenários preparados.
+- Idade e cooldown avançam pelo dt validado. Após alimentação e metabolismo,
+  cada sobrevivente com idade ≥10, energia ≥110 e cooldown encerrado pode
+  gerar exatamente um filhote naquele passo. Transferência 45, espera 10 s.
+- Características copiadas: speed, vision, efficiency. Filhote inicia com
+  idade e cooldown zero, energia 45 e geração do progenitor +1, sem mutação.
+- Posição sorteada a 16 pixels do progenitor (2 raios +2), com coordenadas
+  limitadas pelo raio nas bordas. Direção e intervalo inicial de exploração
+  usam o RNG próprio. IDs e contadores não consomem aleatoriedade.
+- Lista de recém-nascidos separada: entram ao final e só agem no próximo passo.
+  Sobreviventes e filhotes substituem a coleção após a iteração. Totais
+  births_total e deaths_total no World; população inicial não conta como nascimento.
+- Mortos anteriores e os que esgotam energia são contados uma vez e removidos;
+  não reproduzem. Contadores persistem após extinção. Não há HUD ou métricas novas.
+- Primeira regressão encontrou a expectativa antiga de população fixa no teste
+  de 60 s (70 passaram, 1 falhou). Teste atualizado para população dinâmica,
+  balanço de eventos e IDs únicos, preservando verificações de movimento/bordas.
+- Integração seguinte: `.venv/bin/python -m pytest -q`, **99 passed in 3.50s**,
+  saída 0, SDL dummy. Casos incluem bloqueios, conservação descontando metabolismo,
+  espera completa, IDs não reutilizados, bordas/cantos, gerações e determinismo.
+- S3-02 a S3-04 concluídas; S3-05 em andamento. Adicionados também casos de
+  nascimento em cadências diferentes e desenho sem alterar ciclo/contadores.
+
+## Entrega da Sprint 3 — S3-05 a S3-07
+
+RF-07 implementado, com identidade e geração básicas necessárias aos nascimentos,
+conforme autorização explícita do usuário. Sem estrutura Genetics ou mutações.
+Config, Creature e World alterados; Renderer e main.py preservados. Testes de
+mundo, cadência e desenho estendidos; `tests/test_reproduction.py` e
+`docs/media/sprint3.gif` novos. AGENTS, README, arquitetura, sprints, tarefas e
+esta memória atualizados. Sprints 0–2 e suas mídias preservadas.
+
+| Comando / verificação executada | Resultado |
+| --- | --- |
+| `.venv/bin/python -m pytest -q` após implementação final | **103 passed in 3.61s**, saída 0, SDL dummy |
+| `.venv/bin/python -m pip --no-cache-dir check` | No broken requirements found., saída 0 |
+| `.venv/bin/python -m compileall -q main.py evolife tests` | Saída 0 |
+| Python global / .venv | Ambos 3.14.4, preservados |
+| `sha256sum EvoLife_PRD_Roadmap.md` | 740fabf9754d5fa4081a8229607a3ced6bd27c3c333440062a491904a10f4802, original |
+| Execução da demonstração | 3.600 passos, 60 s simulados; 28 nascimentos, 5 mortes; população máxima 34, final 33 |
+| Primeiro nascimento | 10 s lógicos, ID 10, geração 1 e energia inicial 45 |
+| Geração máxima ao final da demonstração | 3, características copiadas sem mutação |
+| GIF final via ffprobe | 800 × 600, 225 quadros, 15,000 s, 734.228 bytes |
+| Frame inspecionado pelo agente | 10,4 s lógicos: 20 criaturas, dez nascimentos, círculos novos destacados |
+
+A suíte final acrescenta 32 casos à base de 71: 28 em reprodução, três novas
+cadências com nascimento e um desenho de recém-nascido. Verifica requisitos
+inclusivos e bloqueios, transferência 45, conservação descontando metabolismo,
+idade por 600 passos, cooldown completo, ausência de reprodução recursiva,
+características copiadas e geração, bordas/cantos e mundo pequeno, IDs iniciais
+e não reutilizados, eventos simultâneos e morte contada uma vez, extinção,
+dt zero e determinismo com births/deaths/IDs. Os testes anteriores de importação,
+movimento, sobrevivência e ciclo de aplicação continuam aprovados.
+
+Demonstração: `World(seed=42)` padrão, área 800 ×600, dez criaturas, energia
+inicial 100, idade/cooldown zero, geração zero, visão 100, eficiência 1,
+velocidades sorteadas de 25 a 90, 75 alimentos, reposição 1/s até 125.
+Reprodução oficial: idade ≥10, energia ≥110 após metabolismo, cooldown zero;
+transferência 45 e espera 10 s. Distância inicial do filhote 16 pixels,
+com ajuste de posição nas bordas. Nenhum parâmetro oficial foi alterado.
+World e Renderer reais geraram 225 superfícies, amostradas a cada 16 passos;
+ffmpeg preexistente codificou a 15 FPS. Assim o GIF mostra 60 s lógicos em 15 s,
+a 4x, sem implementar controle de velocidade na aplicação. Legendas e anéis
+amarelos destacam nascimento recente apenas na mídia, sem HUD novo.
+Renderização fora da tela; SDL dummy, sem janela de desktop. Intermediários
+em diretório temporário; nenhuma dependência instalada. Houve oscilação real:
+por exemplo, aos 56,7333 s a população caiu de 33 para 32, e aos 59,3333 s
+um nascimento elevou-a novamente a 33.
+
+Revisão estática realizada: elegibilidade após metabolismo, ordem do ciclo,
+transferência sem criação de energia, cooldown, IDs monotônicos, geração,
+clamp nas bordas, RNG próprio e cópia dos atributos; nenhuma alteração da
+coleção percorrida, recém-nascidos diferidos e contagem única de mortos.
+Diff de código e testes revisado; compileall aprovado. Nenhuma falha funcional
+pendente. A única falha intermediária foi a expectativa antiga de população
+fixa, já corrigida e registrada acima.
+
+Limitações no momento da entrega técnica: sem validação manual da Sprint 3
+pelo usuário, execução gráfica
+X11 nesta sprint, teste Windows, benchmark ou estabilidade de 15 minutos.
+A simulação mantém contrato de passo fixo; dt grande não reproduz a mesma
+sequência de decisões. Não há limite de população novo nem morte por velhice.
+Nas bordas um filhote pode sobrepor o progenitor; não há colisão entre criaturas.
+ID/generation são a estrutura mínima, sem parent_id ou organização genética.
+Nenhuma dificuldade de instalação/ambiente; Python global, .venv e dependências
+preservados. Não houve agentes auxiliares.
+
+S3-05, S3-06 e S3-07 concluídas. Desenvolvimento da Sprint 3 interrompido para
+revisão antes de qualquer commit ou integração. Sprint 4 não autorizada.
+Sem commits, pushes, tags, merges, publicação ou alterações da main.
+
+Conferência final: develop e origin/main permanecem em 3b75b6e, main local em
+73d5e04; 12 arquivos rastreados modificados e dois novos nesta entrega.
+`git diff --check` passou sem avisos; whitespace do novo teste e destinos dos
+links locais passaram. PRD e todas as mídias anteriores foram preservados.
+
+## Validação pelo usuário — Sprint 3, Ubuntu — 12/10/2026
+
+O usuário informou ter executado manualmente o EvoLife da Sprint 3 no Ubuntu
+e não ter identificado erros na aplicação. Esta evidência é um relato do
+usuário, distinto dos testes automatizados com SDL dummy e da demonstração
+renderizada fora da tela pelo agente. A pendência de avaliação manual no Ubuntu
+fica atendida pelo relato, sem alterar o estado de aprovação ou integração.
+
+Preservados os resultados anteriores, incluindo **103 passed in 3.61s** na
+suíte automatizada executada pelo agente. O relato atual refere-se à aplicação;
+não registra nova execução da suíte de testes. Não houve reexecução dos testes
+pelo agente nesta atualização documental.
+
+S3-08 concluída pelo usuário; relato registrado na memória, no quadro de tarefas,
+no plano de sprints e no README. Somente esses documentos foram alterados nesta
+tarefa, preservando código e mudanças preexistentes. Sem commits ou push.
+Desenvolvimento continua interrompido para revisão; Sprint 4 não autorizada.

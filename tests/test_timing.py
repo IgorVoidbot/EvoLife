@@ -15,10 +15,12 @@ from evolife.world import World
     [[10] * 100, [100] * 10, [1000]],
     ids=["100-fps", "10-fps", "1-fps"],
 )
-def test_fixed_time_updates_are_independent_of_rendering(monkeypatch, frame_times):
+@pytest.mark.parametrize("initial_age", [0, 9.5], ids=["sem-nascimento", "com-nascimento"])
+def test_fixed_time_updates_are_independent_of_rendering(monkeypatch, frame_times, initial_age):
     world = World()
     world.foods.clear()
-    world.creatures = [Creature(100.0, 100.0, 0.0, 40.0, wander_remaining=3.0)]
+    world.creatures = [Creature(100, 100, 0, 40, energy=120,
+                                wander_remaining=3, age_seconds=initial_age)]
     steps = []
     original_update = world.update
 
@@ -51,7 +53,14 @@ def test_fixed_time_updates_are_independent_of_rendering(monkeypatch, frame_time
     assert len(frames) == len(frame_times)
     assert world.creatures[0].x == pytest.approx(140.0)
     assert world.creatures[0].y == pytest.approx(100.0)
-    assert world.creatures[0].energy == pytest.approx(100.0 - 1.33)
+    expected_births = 1 if initial_age == 9.5 else 0
+    assert world.births_total == expected_births
+    assert world.deaths_total == 0
+    assert world.creatures[0].energy == pytest.approx(120 - 1.33 - 45 * expected_births)
+    assert world.creatures[0].age_seconds == pytest.approx(initial_age + 1)
+    if expected_births:
+        assert world.creatures[1].age_seconds == pytest.approx(0.5)
+        assert world.creatures[1].energy == pytest.approx(45 - 1.33 * 0.5)
     assert len(world.foods) == 1
     assert not pygame.display.get_init()
 
